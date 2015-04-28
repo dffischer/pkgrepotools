@@ -3,11 +3,15 @@
 while [ "$1" ]; do
   case "$1" in
     -h)
-      echo "usage: $0 [-h | package...]"
+      echo "usage: $0 [-h | -p package...]"
       echo 'builds the given packages, or all found below the current directory, expanding' \
         'makepkg-templates but leaving the original intact apart from the version numbers.'
       echo 'Templates are taken from a makepkg-templates directory found besides this script.'
       exit ;;
+    -p)
+      packages+=("$2")
+      shift ;;
+    *) pass+=("$1") ;;
   esac
   shift
 done
@@ -18,7 +22,7 @@ templates=(
   --template-dir
   "$(realpath ${BASH_SOURCE[@]%/*})/makepkg-templates"
 )
-for dir in ${@:-$(find ! -readable -prune -o -iname PKGBUILD -printf "%h\n")}
+for dir in ${packages[@]:-$(find ! -readable -prune -o -iname PKGBUILD -printf "%h\n")}
 do
   if [ ! -r "$dir/PKGBUILD" ]
   then
@@ -31,8 +35,8 @@ do
       sed -i '/# \(template\|vim\)/d' PKGBUILD.expanded
 
       # build
-      makepkg -fp PKGBUILD.expanded || exit $?
-      makepkg -Sfp PKGBUILD.expanded || exit $?
+      makepkg -p PKGBUILD.expanded "${pass[@]}" || exit $?
+      makepkg -Sp PKGBUILD.expanded "${pass[@]}" || exit $?
 
       # propagate changed pkgver
       oldpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' PKGBUILD)
