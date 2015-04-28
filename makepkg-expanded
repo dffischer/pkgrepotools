@@ -9,7 +9,12 @@ then
   exit
 fi
 
-templates="--template-dir /usr/share/makepkg-template --template-dir $(realpath ${BASH_SOURCE[@]%%/*})/makepkg-templates"
+templates=(
+  --template-dir
+  "$(grep -Po "(?<=^\ttemplate_dir => \[').*(?='\],$)" $(which makepkg-template))"
+  --template-dir
+  "$(realpath ${BASH_SOURCE[@]%/*})/makepkg-templates"
+)
 for dir in ${@:-$(find -iname PKGBUILD -printf "%h\n")}
 do
   if [ ! -r "$dir/PKGBUILD" ]
@@ -19,7 +24,7 @@ do
     ( cd "$dir"
 
       # expand and clean
-      makepkg-template -o PKGBUILD.expanded $templates || exit $?
+      makepkg-template -o PKGBUILD.expanded "${templates[@]}" || exit $?
       sed -i '/# \(template\|vim\)/d' PKGBUILD.expanded
 
       # build
