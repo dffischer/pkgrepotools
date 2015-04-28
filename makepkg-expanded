@@ -1,13 +1,16 @@
 #!/bin/bash
 
-if [ "$1" = "-h" ]
-then
-  echo "usage: $0 [package...]"
-  echo 'builds the given packages, or all found below the current directory, expanding' \
-    'makepkg-templates but leaving the original intact apart from the version numbers.'
-  echo 'Templates are taken from a makepkg-templates directory found besides this script.'
-  exit
-fi
+while [ "$1" ]; do
+  case "$1" in
+    -h)
+      echo "usage: $0 [-h | package...]"
+      echo 'builds the given packages, or all found below the current directory, expanding' \
+        'makepkg-templates but leaving the original intact apart from the version numbers.'
+      echo 'Templates are taken from a makepkg-templates directory found besides this script.'
+      exit ;;
+  esac
+  shift
+done
 
 templates=(
   --template-dir
