@@ -29,7 +29,7 @@ do
 
       # build
       makepkg -fp PKGBUILD.expanded || exit $?
-      mkaurball -fp PKGBUILD.expanded || exit $?
+      makepkg -Sfp PKGBUILD.expanded || exit $?
 
       # propagate changed pkgver
       oldpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' PKGBUILD)
