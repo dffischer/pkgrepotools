@@ -15,23 +15,24 @@ do
   if [ ! -r "$dir/PKGBUILD" ]
   then
     echo "$dir does not contain any PKGBUILD"
-  else (
-    cd "$dir"
+  else
+    ( cd "$dir"
 
-    # expand and clean
-    makepkg-template -o PKGBUILD.expanded $templates
-    sed -i '/# \(template\|vim\)/d' PKGBUILD.expanded
+      # expand and clean
+      makepkg-template -o PKGBUILD.expanded $templates || exit $?
+      sed -i '/# \(template\|vim\)/d' PKGBUILD.expanded
 
-    # build
-    makepkg -fp PKGBUILD.expanded
-    mkaurball -fp PKGBUILD.expanded
+      # build
+      makepkg -fp PKGBUILD.expanded || exit $?
+      mkaurball -fp PKGBUILD.expanded || exit $?
 
-    # propagate changed pkgver
-    oldpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' PKGBUILD)
-    newpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' PKGBUILD.expanded)
-    if [ $newpkgver != $oldpkgver ]
-    then
-      sed --follow-symlinks -i "s:^pkgver=[^ ]*:pkgver=$newpkgver:;s:^pkgrel=[^ ]*:pkgrel=1:" PKGBUILD
-    fi
-  ) fi
+      # propagate changed pkgver
+      oldpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' PKGBUILD)
+      newpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' PKGBUILD.expanded)
+      if [ $newpkgver != $oldpkgver ]
+      then
+        sed --follow-symlinks -i "s:^pkgver=[^ ]*:pkgver=$newpkgver:;s:^pkgrel=[^ ]*:pkgrel=1:" PKGBUILD
+      fi
+    ) || exit $?
+  fi
 done
