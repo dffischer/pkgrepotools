@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export TEXTDOMAIN='pacman-scripts'
+
 while [ "$1" ]; do
   case "$1" in
     -h)
@@ -11,7 +13,7 @@ while [ "$1" ]; do
     -p)
       if [[ "$2" == -* || -z "$2" ]]
       then
-        echo '-p without argument' >&2
+        echo "makepkg-expanded: $(gettext "option requires an argument") -- -p" >&2
         exit 1
       else
         packages+=("$2")
@@ -32,7 +34,7 @@ for path in ${packages[@]:-$(find ! -readable -prune -o -iname PKGBUILD -print)}
 do
   if [ ! -f "$path" ]
   then
-    echo "$path does not exist or is no build script"
+    printf "$0: $(gettext "%s file (%s) does not exist or is not a regular file.")\n" "build script" "$path"
   else
     # Plain suffix removal does not suffice as $path may be just a filename.
     dir="$(dirname "$path")"
@@ -52,7 +54,12 @@ do
       newpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' PKGBUILD.expanded)
       if [ $newpkgver != $oldpkgver ]
       then
-        sed --follow-symlinks -i "s:^pkgver=[^ ]*:pkgver=$newpkgver:;s:^pkgrel=[^ ]*:pkgrel=1:" "$file"
+        if [ -w "$file" ]
+        then
+          sed --follow-symlinks -i "s:^pkgver=[^ ]*:pkgver=$newpkgver:;s:^pkgrel=[^ ]*:pkgrel=1:" "$file"
+        else
+          printf "$0: $(gettext "%s is not writeable -- pkgver will not be updated")\n" "$file"
+        fi
       fi
     ) || exit $?
   fi
