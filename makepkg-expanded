@@ -3,7 +3,7 @@
 while [ "$1" ]; do
   case "$1" in
     -h)
-      echo "usage: $0 [-h | -p package...]"
+      echo "usage: $0 [-h | -p PKGBUILD ...]"
       echo 'builds the given packages, or all found below the current directory, expanding' \
         'makepkg-templates but leaving the original intact apart from the version numbers.'
       echo 'Templates are taken from a makepkg-templates directory found besides this script.'
@@ -22,16 +22,19 @@ templates=(
   --template-dir
   "$(realpath ${BASH_SOURCE[@]%/*})/makepkg-templates"
 )
-for dir in ${packages[@]:-$(find ! -readable -prune -o -iname PKGBUILD -printf "%h\n")}
+for path in ${packages[@]:-$(find ! -readable -prune -o -iname PKGBUILD -print)}
 do
-  if [ ! -r "$dir/PKGBUILD" ]
+  if [ ! -f "$path" ]
   then
-    echo "$dir does not contain any PKGBUILD"
+    echo "$path does not exist or is no build script"
   else
+    # Plain suffix removal does not suffice as $path may be just a filename.
+    dir="$(dirname "$path")"
+    file="${path##*/}"
     ( cd "$dir"
 
       # expand and clean
-      makepkg-template -o PKGBUILD.expanded "${templates[@]}" || exit $?
+      makepkg-template -p "$file" -o PKGBUILD.expanded "${templates[@]}" || exit $?
       sed -i '/# \(template\|vim\)/d' PKGBUILD.expanded
 
       # build
@@ -39,11 +42,11 @@ do
       makepkg -Sp PKGBUILD.expanded "${pass[@]}" || exit $?
 
       # propagate changed pkgver
-      oldpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' PKGBUILD)
+      oldpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$file")
       newpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' PKGBUILD.expanded)
       if [ $newpkgver != $oldpkgver ]
       then
-        sed --follow-symlinks -i "s:^pkgver=[^ ]*:pkgver=$newpkgver:;s:^pkgrel=[^ ]*:pkgrel=1:" PKGBUILD
+        sed --follow-symlinks -i "s:^pkgver=[^ ]*:pkgver=$newpkgver:;s:^pkgrel=[^ ]*:pkgrel=1:" "$file"
       fi
     ) || exit $?
   fi
