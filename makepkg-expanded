@@ -15,7 +15,7 @@ templates=(
   --template-dir
   "$(realpath ${BASH_SOURCE[@]%/*})/makepkg-templates"
 )
-for dir in ${@:-$(find -iname PKGBUILD -printf "%h\n")}
+for dir in ${@:-$(find ! -readable -prune -o -iname PKGBUILD -printf "%h\n")}
 do
   if [ ! -r "$dir/PKGBUILD" ]
   then
