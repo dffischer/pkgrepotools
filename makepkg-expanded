@@ -9,7 +9,13 @@ while [ "$1" ]; do
       echo 'Templates are taken from a makepkg-templates directory found besides this script.'
       exit ;;
     -p)
-      packages+=("$2")
+      if [[ "$2" == -* || -z "$2" ]]
+      then
+        echo '-p without argument' >&2
+        exit 1
+      else
+        packages+=("$2")
+      fi
       shift ;;
     *) pass+=("$1") ;;
   esac
