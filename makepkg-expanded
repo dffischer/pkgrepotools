@@ -90,7 +90,7 @@ do
     dir="$(dirname "$path")"
     file="${path##*/}"
     expanded="$file${extension:=.expanded}"
-    ( cd "$dir"
+    ( cd "$dir" #(
 
       # expand and clean
       makepkg-template -p "$file" -o "$expanded" "${templates[@]}" || exit $?
@@ -112,6 +112,6 @@ do
           printf "$0: $(gettext "%s is not writeable -- pkgver will not be updated")\n" "$file"
         fi
       fi
-    ) || exit $?
+    ) || exit $? #)
   fi
 done
