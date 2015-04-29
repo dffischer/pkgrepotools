@@ -15,9 +15,13 @@ add_all() {
   done < <(find ! -readable -prune -o -iname ${1:-PKGBUILD} -print0)
 }
 
+mksource () {
+  makepkg -S "$@"
+}
+
 while [ $OPTIND -le $# ]
 do
-  if getopts ':hp:a:-:' argument
+  if getopts ':hp:a:B-:' argument
   then
     case $argument in
       h)
@@ -29,10 +33,15 @@ do
         echo ' -h              show this help text'
         echo ' -p <script>     select an alternative file instead of PKGBUILD'
         echo ' -a [pattern]    select all files matching the given pattern, or all PKGBUILDs'
+        echo ' -B              do not generate source aurball, just build package'
         echo 'All other arguments are passed to makepkg.'
         exit ;;
       p) packages+=("$OPTARG") ;;
       a) add_all "$OPTARG" ;;
+      B)
+        mksource() {
+          :
+        } ;;
       \?) pass+=("-$OPTARG") ;;
       -) lastarg=$((OPTIND - 1))
         case "${!lastarg}" in
@@ -80,7 +89,7 @@ do
 
       # build
       makepkg -p PKGBUILD.expanded "${pass[@]}" || exit $?
-      makepkg -Sp PKGBUILD.expanded "${pass[@]}" || exit $?
+      mksource -p PKGBUILD.expanded "${pass[@]}" || exit $?
 
       # propagate changed pkgver
       oldpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$file")
