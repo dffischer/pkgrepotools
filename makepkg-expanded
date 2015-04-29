@@ -28,7 +28,6 @@ do
         echo "usage: $0 [options]"
         echo 'builds the PKGBUILD found in the current directory, expanding makepkg-templates' \
           'but leaving the original intact apart from the version numbers.'
-        echo 'Templates are taken from a makepkg-templates directory found besides this script.'
         echo 'Valid options are:'
         echo ' -h              show this help text'
         echo ' -p <script>     select an alternative file instead of PKGBUILD'
@@ -70,12 +69,12 @@ done
 
 if [ "${#templates[@]}" -le 0 ]
 then
-  templates=( \
-    --template-dir
-    "$(grep -Po "(?<=^\ttemplate_dir => \[').*(?='\],$)" $(which makepkg-template))"
-    --template-dir
-    "$(realpath ${BASH_SOURCE[@]%/*})/makepkg-templates"
-  )
+  templates=("$(grep -Po "(?<=^\ttemplate_dir => \[').*(?='\],$)" $(which makepkg-template))")
+  gitdir="$(git rev-parse --show-toplevel)/makepkg-templates"
+  if [ $? -eq 0 -a -d "$gitdir" ]
+  then
+    templates+=("$gitdir")
+  fi
 fi
 
 
@@ -93,7 +92,7 @@ do
     ( cd "$dir" #(
 
       # expand and clean
-      makepkg-template -p "$file" -o "$expanded" "${templates[@]}" || exit $?
+      makepkg-template -p "$file" -o "$expanded" "${templates[@]/#/--template-dir=}" || exit $?
       sed -i '/# \(template\|vim\)/d' "$expanded"
 
       # build
