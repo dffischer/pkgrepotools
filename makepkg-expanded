@@ -4,26 +4,39 @@
 export TEXTDOMAIN='pacman-scripts'
 
 # parse arguments
-while [ "$1" ]; do
-  case "$1" in
-    -h)
-      echo "usage: $0 [-h | -p PKGBUILD ...]"
-      echo 'builds the given packages, or all found below the current directory, expanding' \
-        'makepkg-templates but leaving the original intact apart from the version numbers.'
-      echo 'Templates are taken from a makepkg-templates directory found besides this script.'
-      exit ;;
-    -p)
-      if [[ "$2" == -* || -z "$2" ]]
-      then
-        echo "makepkg-expanded: $(gettext "option requires an argument") -- -p" >&2
-        exit 1
-      else
-        packages+=("$2")
-      fi
-      shift ;;
-    *) pass+=("$1") ;;
-  esac
-  shift
+invalid_option() {
+  echo "$0: $(gettext "invalid option") -- '-'" >&2
+}
+
+while [ $OPTIND -le $# ]
+do
+  if getopts ':hp:-:' argument
+  then
+    case $argument in
+      h)
+        echo "usage: $0 [-h | -p PKGBUILD ...]"
+        echo 'builds the given packages, or all found below the current directory, expanding' \
+          'makepkg-templates but leaving the original intact apart from the version numbers.'
+        echo 'Templates are taken from a makepkg-templates directory found besides this script.'
+        exit ;;
+      p) packages+=("$OPTARG") ;;
+      \?) pass+=("-$OPTARG") ;;
+      -) lastarg=$((OPTIND - 1))
+        case "${!lastarg}" in
+          # Long arguments may be tried to be handled here. Avoid shift
+          # though, it most probably breaks the surrounding routine.
+          --*) pass+=("--$OPTARG") ;;
+          *) invalid_option
+            exit 1 ;;
+        esac ;;
+      :) [ $OPTARG = - ] && invalid_option ||
+        echo "$0: $(gettext "option requires an argument") -- '-$OPTARG'" >&2
+        exit 1 ;;
+    esac
+  else
+    pass+=("${!OPTIND}")
+    let OPTIND++
+  fi
 done
 
 templates=(
