@@ -14,10 +14,15 @@ do
   then
     case $argument in
       h)
-        echo "usage: $0 [-h | -p PKGBUILD ... | -a]"
-        echo 'builds the given packages, or all found below the current directory, expanding' \
-          'makepkg-templates but leaving the original intact apart from the version numbers.'
+        echo "usage: $0 [options]"
+        echo 'builds the PKGBUILD found in the current directory, expanding makepkg-templates' \
+          'but leaving the original intact apart from the version numbers.'
         echo 'Templates are taken from a makepkg-templates directory found besides this script.'
+        echo 'Valid options are:'
+        echo ' -h              show this help text'
+        echo ' -p <script>     select an alternative file instead of PKGBUILD'
+        echo ' -a              select all PKGBUILDs to be found below the current directory'
+        echo 'All other arguments are passed to makepkg.'
         exit ;;
       p) packages+=("$OPTARG") ;;
       a)
