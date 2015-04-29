@@ -10,16 +10,21 @@ invalid_option() {
 
 while [ $OPTIND -le $# ]
 do
-  if getopts ':hp:-:' argument
+  if getopts ':hp:a-:' argument
   then
     case $argument in
       h)
-        echo "usage: $0 [-h | -p PKGBUILD ...]"
+        echo "usage: $0 [-h | -p PKGBUILD ... | -a]"
         echo 'builds the given packages, or all found below the current directory, expanding' \
           'makepkg-templates but leaving the original intact apart from the version numbers.'
         echo 'Templates are taken from a makepkg-templates directory found besides this script.'
         exit ;;
       p) packages+=("$OPTARG") ;;
+      a)
+        while read -r -d $'\0'; do
+          packages+=("$REPLY")
+        done < <(find ! -readable -prune -o -iname PKGBUILD -print0)
+        ;;
       \?) pass+=("-$OPTARG") ;;
       -) lastarg=$((OPTIND - 1))
         case "${!lastarg}" in
@@ -47,7 +52,7 @@ templates=(
 )
 
 # process PKGBUILDs
-for path in ${packages[@]:-$(find ! -readable -prune -o -iname PKGBUILD -print)}
+for path in ${packages[@]:-PKGBUILD}
 do
   if [ ! -f "$path" ]
   then
