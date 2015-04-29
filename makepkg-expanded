@@ -21,7 +21,7 @@ mksource () {
 
 while [ $OPTIND -le $# ]
 do
-  if getopts ':hp:a:t:B-:' argument
+  if getopts ':hp:a:t:b:B-:' argument
   then
     case $argument in
       h)
@@ -34,12 +34,14 @@ do
         echo ' -p <script>     select an alternative file instead of PKGBUILD'
         echo ' -a [pattern]    select all files matching the given pattern, or all PKGBUILDs'
         echo ' -t <dir>        directory to look up templates in'
+        echo ' -b <extension>  extension for intermediate expanded build scripts'
         echo ' -B              do not generate source aurball, just build package'
         echo 'All other arguments are passed to makepkg.'
         exit ;;
       p) packages+=("$OPTARG") ;;
       a) add_all "$OPTARG" ;;
       t) templates+=(--template-dir "$(realpath "$OPTARG")") ;;
+      b) extension="$OPTARG" ;;
       B)
         mksource() {
           :
@@ -87,19 +89,20 @@ do
     # Plain suffix removal does not suffice as $path may be just a filename.
     dir="$(dirname "$path")"
     file="${path##*/}"
+    expanded="$file${extension:=.expanded}"
     ( cd "$dir"
 
       # expand and clean
-      makepkg-template -p "$file" -o PKGBUILD.expanded "${templates[@]}" || exit $?
-      sed -i '/# \(template\|vim\)/d' PKGBUILD.expanded
+      makepkg-template -p "$file" -o "$expanded" "${templates[@]}" || exit $?
+      sed -i '/# \(template\|vim\)/d' "$expanded"
 
       # build
-      makepkg -p PKGBUILD.expanded "${pass[@]}" || exit $?
-      mksource -p PKGBUILD.expanded "${pass[@]}" || exit $?
+      makepkg -p "$expanded" "${pass[@]}" || exit $?
+      mksource -p "$expanded" "${pass[@]}" || exit $?
 
       # propagate changed pkgver
       oldpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$file")
-      newpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' PKGBUILD.expanded)
+      newpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$expanded")
       if [ $newpkgver != $oldpkgver ]
       then
         if [ -w "$file" ]
