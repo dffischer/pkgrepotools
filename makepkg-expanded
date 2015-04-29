@@ -6,11 +6,18 @@ export TEXTDOMAIN='pacman-scripts'
 # parse arguments
 invalid_option() {
   echo "$0: $(gettext "invalid option") -- '-'" >&2
+  exit 1
+}
+
+add_all() {
+  while read -r -d $'\0'; do
+    packages+=("$REPLY")
+  done < <(find ! -readable -prune -o -iname ${1:-PKGBUILD} -print0)
 }
 
 while [ $OPTIND -le $# ]
 do
-  if getopts ':hp:a-:' argument
+  if getopts ':hp:a:-:' argument
   then
     case $argument in
       h)
@@ -21,27 +28,26 @@ do
         echo 'Valid options are:'
         echo ' -h              show this help text'
         echo ' -p <script>     select an alternative file instead of PKGBUILD'
-        echo ' -a              select all PKGBUILDs to be found below the current directory'
+        echo ' -a [pattern]    select all files matching the given pattern, or all PKGBUILDs'
         echo 'All other arguments are passed to makepkg.'
         exit ;;
       p) packages+=("$OPTARG") ;;
-      a)
-        while read -r -d $'\0'; do
-          packages+=("$REPLY")
-        done < <(find ! -readable -prune -o -iname PKGBUILD -print0)
-        ;;
+      a) add_all "$OPTARG" ;;
       \?) pass+=("-$OPTARG") ;;
       -) lastarg=$((OPTIND - 1))
         case "${!lastarg}" in
           # Long arguments may be tried to be handled here. Avoid shift
           # though, it most probably breaks the surrounding routine.
           --*) pass+=("--$OPTARG") ;;
-          *) invalid_option
-            exit 1 ;;
+          *) invalid_option ;;
         esac ;;
-      :) [ $OPTARG = - ] && invalid_option ||
-        echo "$0: $(gettext "option requires an argument") -- '-$OPTARG'" >&2
-        exit 1 ;;
+      :)
+        case "$OPTARG" in
+          a) add_all ;;
+          -) invalid_option ;;
+          *) echo "$0: $(gettext "option requires an argument") -- '-$OPTARG'" >&2
+            exit 1 ;;
+        esac
     esac
   else
     pass+=("${!OPTIND}")
