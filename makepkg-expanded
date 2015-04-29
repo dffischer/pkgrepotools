@@ -21,7 +21,7 @@ mksource () {
 
 while [ $OPTIND -le $# ]
 do
-  if getopts ':hp:a:B-:' argument
+  if getopts ':hp:a:t:B-:' argument
   then
     case $argument in
       h)
@@ -33,11 +33,13 @@ do
         echo ' -h              show this help text'
         echo ' -p <script>     select an alternative file instead of PKGBUILD'
         echo ' -a [pattern]    select all files matching the given pattern, or all PKGBUILDs'
+        echo ' -t <dir>        directory to look up templates in'
         echo ' -B              do not generate source aurball, just build package'
         echo 'All other arguments are passed to makepkg.'
         exit ;;
       p) packages+=("$OPTARG") ;;
       a) add_all "$OPTARG" ;;
+      t) templates+=(--template-dir "$(realpath "$OPTARG")") ;;
       B)
         mksource() {
           :
@@ -64,12 +66,16 @@ do
   fi
 done
 
-templates=(
-  --template-dir
-  "$(grep -Po "(?<=^\ttemplate_dir => \[').*(?='\],$)" $(which makepkg-template))"
-  --template-dir
-  "$(realpath ${BASH_SOURCE[@]%/*})/makepkg-templates"
-)
+if [ "${#templates[@]}" -le 0 ]
+then
+  templates=( \
+    --template-dir
+    "$(grep -Po "(?<=^\ttemplate_dir => \[').*(?='\],$)" $(which makepkg-template))"
+    --template-dir
+    "$(realpath ${BASH_SOURCE[@]%/*})/makepkg-templates"
+  )
+fi
+
 
 # process PKGBUILDs
 for path in ${packages[@]:-PKGBUILD}
