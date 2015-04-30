@@ -65,6 +65,8 @@ When makepkg-template(1) or makepkg(1) fail, their exit code is passed through.
 
 ## BUGS
 
+Specifying multiple template directories (the `-t` option) can only be done with a patched pacman installation. Without it, only the last `-t` option has any effect. This also affects the defaults. When run from within a git repository and a local template directory is present there, templates in the system default path will be neglected without the patch. Instructions on how to patch pacman can be found within [the source repository of makepkg-expanded](https://github.com/dffischer/makepkg-expanded/blob/master/patching-pacman.md)
+
 This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http://github.com/dffischer/makepkg-expanded). Bugs can be filed in [the tracker found there](http://github.com/dffischer/makepkg-expanded/issues).
 
 
