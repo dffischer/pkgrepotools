@@ -8,3 +8,10 @@ Tired of all the clutter _makepkg-template_ causes in your PKGBUILD? Use makepkg
 - It also is aware of git and can use a directory of repository-wide templates.
 
 For more details and options, see [the manual page](makepkg-expanded.md).
+
+
+## Installation
+
+As it is probably only useful in [Arch Linux](https://archlinux.org/), anyways, [go grab it from the AUR](http://aur.archlinux.org/packages/makepkg-expanded-git/).
+
+To use the [PKGBUILD](PKGBUILD) as it is kept in this repository, [the makepkg-template for git](https://github.com/dffischer/git-makepkg-template) has to be installed.
