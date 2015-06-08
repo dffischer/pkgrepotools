@@ -93,7 +93,7 @@ do
 
       # expand and clean
       makepkg-template -p "$file" -o "$expanded" "${templates[@]/#/--template-dir=}" || exit $?
-      sed -i '/# \(template\|vim\)/d' "$expanded"
+      sed -i '/# vim/d;x;$G;/# template/d;1d' "$expanded"
 
       # build
       makepkg -p "$expanded" "${pass[@]}" || exit $?
