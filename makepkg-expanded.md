@@ -56,15 +56,12 @@ Changes caused by a _pkgver_ function are propagated back to the original PKGBUI
   - `-u`:
     This option is passed to clean-template(1) which is invoked before packaging and creation of the source aurball to leave template markers and mode lines intact. Duplicate templates will still be removed.
 
-    When the `-l` option is also specified, the last of them takes precendence.
+    When the `-l` option is also specified, cleaning is skipped completely.
 
   - `-l`:
     Only remove mode lines and template markers instead when cleaning and leave duplicate templates untouched.
 
-    This completely avoids clean-template invocation and instead replaces it with sed, as mentioned in the clean-template(1) manual page.
-
-    When the `-u` option is also specified, the last of them takes precendence.
-
+    This completely avoids clean-template invocation and instead replaces it with sed, as mentioned in the clean-template(1) manual page. When the `-u` option is also specified, cleaning is skipped completely.
 
 All further options are directly passed through to every invocation of makepkg(1).
 

@@ -48,13 +48,27 @@ do
           :
         } ;;
       u)
-        clean-template() {
-          command clean-template -u
-        } ;;
+        if declare -f | grep -q sed
+        then
+          clean-template() {
+            cat
+          }
+        else
+          clean-template() {
+            command clean-template -u
+          }
+        fi ;;
       l)
-        clean-template() {
-          sed '/# vim/d;x;$G;/# template/d;1d'
-        } ;;
+        if declare -f | grep -q command
+        then
+          clean-template() {
+            cat
+          }
+        else
+          clean-template() {
+            sed '/# vim/d;x;$G;/# template/d;1d'
+          }
+        fi ;;
       \?) pass+=("-$OPTARG") ;;
       -) lastarg=$((OPTIND - 1))
         case "${!lastarg}" in
