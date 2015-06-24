@@ -26,6 +26,9 @@ This program cleans every PKGBUILD(5) it is passed from some of the chaos makepk
   - `-h`:
     Shows a summary of the options.
 
+  - `-u`:
+    Only remove duplicates, leave mode lines and markers of kept templates intact.
+
 
 ## EXIT STATUS
 

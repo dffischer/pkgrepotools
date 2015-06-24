@@ -1,13 +1,24 @@
 #!/bin/bash
 
-while getopts 'h' argument
+search='^[[:space:]]*# (vim|template\ (start.*name=([[:alnum:]-]*)|end)).*$'
+skip() {
+  continue
+}
+
+while getopts 'hu' argument
 do
   case $argument in
     h)
       echo "usage: $0 [options] < PKGBUILD"
       echo 'cleans a given PKGBUILD'
       echo ' -h  show this help text'
+      echo ' -u  only remove duplicates'
       exit ;;
+    u)
+      search='^[[:space:]]*# (template\ (start.*name=([[:alnum:]-]*))).*$'
+      skip() {
+        :
+      } ;;
     \?) exit 1 ;;
   esac
 done
@@ -35,7 +46,7 @@ seen=/
 
 while read -r line
 do
-  if [[ $line =~ ^[[:space:]]*'# '(vim|template\ (start.*name=([[:alnum:]-]*)|end)).*$ ]]
+  if [[ $line =~ $search ]]
   then
     case ${BASH_REMATCH[1]} in
       vim) unset last ;;
@@ -44,13 +55,14 @@ do
         if [[ $name =~ ^($seen)$ ]]
         then
           collect_until_end || exit 1
+          continue
         else
           seen+="|${name}"
         fi ;;
     esac
-  else
-    echo -En "$last"
-    last=$line$'\n'
+    skip
   fi
+  echo -En "$last"
+  last=$line$'\n'
 done
 echo -En "$last"
