@@ -93,7 +93,7 @@ do
 
       # expand and clean
       makepkg-template -p "$file" -o - "${templates[@]/#/--template-dir=}" | \
-        deduplicate-template | sed '/# vim/d;x;$G;/# template/d;1d' > "$expanded"
+        clean-template > "$expanded"
       [ ${PIPESTATUS[0]} -ne 0 ] && exit ${PIPESTATUS[0]}
 
       # build
