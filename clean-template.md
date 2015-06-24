@@ -3,7 +3,7 @@ clean-template(1) -- build script beautifier
 
 ## SYNOPSIS
 
-`clean-template` < PKGBUILD.expanded > PKGBUILD.clean
+`clean-template` [ `options` ] < PKGBUILD.expanded > PKGBUILD.clean
 
 
 ## DESCRIPTION
@@ -19,6 +19,12 @@ This program cleans every PKGBUILD(5) it is passed from some of the chaos makepk
 - suppressing duplicate templates.
 
   Only the first occurrence of each template, identified by its name, will be left intact. All further occurrences will be removed, including any templates it includes in turn.
+
+
+## OPTIONS
+
+  - `-h`:
+    Shows a summary of the options.
 
 
 ## EXIT STATUS

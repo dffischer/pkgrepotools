@@ -1,5 +1,18 @@
 #!/bin/bash
 
+while getopts 'h' argument
+do
+  case $argument in
+    h)
+      echo "usage: $0 [options] < PKGBUILD"
+      echo 'cleans a given PKGBUILD'
+      echo ' -h  show this help text'
+      exit ;;
+    \?) exit 1 ;;
+  esac
+done
+
+
 IFS=''
 
 collect_until_end() {
