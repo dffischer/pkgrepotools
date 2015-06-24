@@ -10,7 +10,7 @@ makepkg-expanded(1) -- package expansion and build wrapper
 
 This is a wrapper around makepkg-template(1) and makepkg(1) that builds packages and their source tarballs without touching templates in the original PKGBUILD.
 
-It does so by expanding the templates in a temporary file besides the original which is then stripped from template markers and used for packaging. This leaves the template markers as they are while keeping the source tarball for the AUR free from template relics.
+It does so by expanding the templates in a temporary file besides the original which is then stripped from template markers and duplicate templates before it is used for packaging. This leaves the template markers as they are while keeping the source tarball for the AUR free from template relics.
 
 Changes caused by a _pkgver_ function are propagated back to the original PKGBUILD.
 

@@ -92,8 +92,9 @@ do
     ( cd "$dir" #(
 
       # expand and clean
-      makepkg-template -p "$file" -o "$expanded" "${templates[@]/#/--template-dir=}" || exit $?
-      sed -i '/# vim/d;x;$G;/# template/d;1d' "$expanded"
+      makepkg-template -p "$file" -o - "${templates[@]/#/--template-dir=}" | \
+        deduplicate-template | sed '/# vim/d;x;$G;/# template/d;1d' > "$expanded"
+      [ ${PIPESTATUS[0]} -ne 0 ] && exit ${PIPESTATUS[0]}
 
       # build
       makepkg -p "$expanded" "${pass[@]}" || exit $?
