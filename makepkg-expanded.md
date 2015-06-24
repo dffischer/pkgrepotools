@@ -53,6 +53,9 @@ Changes caused by a _pkgver_ function are propagated back to the original PKGBUI
 
     As all unrecognized options are passed to makepkg(1), creating just the aurball without packaging beforehand can be achieved by passing `-BS`. However, this is discouraged as it would ignore any _pkgver_ function. Building the package first updates the version numbers so that the aurball will then contain current values.
 
+  - `-u`:
+    This option is passed to clean-template(1) which is invoked before packaging and creation of the source aurball to leave template markers and mode lines intact. Duplicate templates will still be removed.
+
 All further options are directly passed through to every invocation of makepkg(1).
 
 

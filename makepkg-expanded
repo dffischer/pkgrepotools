@@ -21,7 +21,7 @@ mksource () {
 
 while [ $OPTIND -le $# ]
 do
-  if getopts ':hp:a:t:b:B-:' argument
+  if getopts ':hp:a:t:b:Bu-:' argument
   then
     case $argument in
       h)
@@ -35,6 +35,7 @@ do
         echo ' -t <dir>        directory to look up templates in'
         echo ' -b <extension>  extension for intermediate expanded build scripts'
         echo ' -B              do not generate source aurball, just build package'
+        echo ' -u              keep template markers intact'
         echo 'All other arguments are passed to makepkg.'
         exit ;;
       p) packages+=("$OPTARG") ;;
@@ -44,6 +45,10 @@ do
       B)
         mksource() {
           :
+        } ;;
+      u)
+        clean-template() {
+          command clean-template -u
         } ;;
       \?) pass+=("-$OPTARG") ;;
       -) lastarg=$((OPTIND - 1))
