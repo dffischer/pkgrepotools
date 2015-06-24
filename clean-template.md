@@ -3,7 +3,7 @@ clean-template(1) -- build script beautifier
 
 ## SYNOPSIS
 
-`clean-template` [ `options` ] < PKGBUILD.expanded > PKGBUILD.clean
+`clean-template` [ `options` ] [_`file`_]
 
 
 ## DESCRIPTION
@@ -22,6 +22,8 @@ This program cleans every PKGBUILD(5) it is passed from some of the chaos makepk
 
 
 ## OPTIONS
+
+  If no file is given, clean-template reads from the standard input.
 
   - `-h`:
     Shows a summary of the options.

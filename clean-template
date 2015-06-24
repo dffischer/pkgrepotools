@@ -64,5 +64,5 @@ do
   fi
   echo -En "$last"
   last=$line$'\n'
-done
+done < ${!OPTIND:-/dev/stdin}
 echo -En "$last"
