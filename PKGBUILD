@@ -16,11 +16,11 @@ makedepends=('ruby-ronn')
 
 build() {
   cd $_gitname
-  ronn --roff makepkg-expanded.md
+  ronn --roff makepkg-expanded.md clean-template.md
 }
 
 package() {
   cd $_gitname
   install -Dt "$pkgdir/usr/bin" makepkg-expanded clean-template
-  install -Dm644 -t "$pkgdir/usr/share/man/man1" makepkg-expanded.1
+  install -Dm644 -t "$pkgdir/usr/share/man/man1" makepkg-expanded.1 clean-template.1
 }
