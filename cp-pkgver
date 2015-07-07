@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# check arguments
+if [ $# -ne 2 ]
+then
+  echo "usage: $0 <source> <destination>"
+  echo 'Copies the value of the pkgver variable from one PKGBUILD to another.'
+fi
+
 oldpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$2")
 newpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$1")
 if [ $newpkgver != $oldpkgver ]
