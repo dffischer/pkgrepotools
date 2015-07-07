@@ -1,11 +1,45 @@
 #!/bin/bash
 
-# check arguments
-if [ $# -ne 2 ]
-then
-  echo "usage: $0 <source> <destination>"
-  echo 'Copies the value of the pkgver and pkgrel variables from one PKGBUILD to another.'
-fi
+# initialize gettext
+export TEXTDOMAIN='bash'
+
+# parse arguments
+assign_if_exists() {
+  if [ -f "$2" ]
+  then
+    eval "$1='$2'"
+  else
+    printf "$0: $(gettext "%s: file not found")\n" "$2"
+    exit 1
+  fi
+}
+
+while [ $OPTIND -le $# ]
+do
+  if getopts 'h' argument
+  then
+    case $argument in
+      h)
+        echo "usage: $0 [-h] <source> <destination>"
+        echo 'Copies the value of the pkgver and pkgrel variables from one PKGBUILD to another.'
+        echo ' -h  only shows this help text'
+        exit ;;
+      \?) exit 1 ;;
+    esac
+  else
+    if [ -z ${src++} ]
+    then
+      assign_if_exists src "${!OPTIND}"
+    elif [ -z ${dst++} ]
+    then
+      assign_if_exists dst "${!OPTIND}"
+    else
+      echo "$0: $(gettext "too many arguments")"
+      exit 1
+    fi
+    let OPTIND++
+  fi
+done
 
 # gather numbers
 srcver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$1")
