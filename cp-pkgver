@@ -7,13 +7,13 @@ then
   echo 'Copies the value of the pkgver variable from one PKGBUILD to another.'
 fi
 
-oldpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$2")
-newpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$1")
-if [ $newpkgver != $oldpkgver ]
+srcver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$1")
+dstver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$2")
+if [ $srcver != $dstver ]
 then
   if [ -w "$2" ]
   then
-    sed --follow-symlinks -i "s:^pkgver=[^ ]*:pkgver=$newpkgver:;s:^pkgrel=[^ ]*:pkgrel=1:" "$2"
+    sed --follow-symlinks -i "s:^pkgver=[^ ]*:pkgver=$srcver:;s:^pkgrel=[^ ]*:pkgrel=1:" "$2"
   else
     printf "$0: $(gettext -d 'pacman-scripts' \
       "%s is not writeable -- pkgver will not be updated")\n" "$2"
