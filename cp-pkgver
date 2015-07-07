@@ -4,16 +4,21 @@
 if [ $# -ne 2 ]
 then
   echo "usage: $0 <source> <destination>"
-  echo 'Copies the value of the pkgver variable from one PKGBUILD to another.'
+  echo 'Copies the value of the pkgver and pkgrel variables from one PKGBUILD to another.'
 fi
 
+# gather numbers
 srcver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$1")
+srcrel=$(grep -Po '(?<=^pkgrel=)[^ ]*' "$1")
 dstver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$2")
-if [ $srcver != $dstver ]
+dstrel=$(grep -Po '(?<=^pkgrel=)[^ ]*' "$2")
+
+# copy if necessary
+if [ $srcver != $dstver -o $srcrel != $dstrel ]
 then
   if [ -w "$2" ]
   then
-    sed --follow-symlinks -i "s:^pkgver=[^ ]*:pkgver=$srcver:;s:^pkgrel=[^ ]*:pkgrel=1:" "$2"
+    sed --follow-symlinks -i "s:^pkgver=[^ ]*:pkgver=$srcver:;s:^pkgrel=[^ ]*:pkgrel=$srcrel:" "$2"
   else
     printf "$0: $(gettext -d 'pacman-scripts' \
       "%s is not writeable -- pkgver will not be updated")\n" "$2"
