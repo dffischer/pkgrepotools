@@ -103,7 +103,7 @@ fi
 
 
 # process PKGBUILDs
-for path in ${packages[@]:-PKGBUILD}
+for path in "${packages[@]:-PKGBUILD}"
 do
   if [ ! -f "$path" ]
   then
