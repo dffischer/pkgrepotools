@@ -82,4 +82,4 @@ This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http:
 
 ## SEE ALSO
 
-makepkg-template(1), makepkg(1), clean-template(1).
+makepkg-template(1), makepkg(1), clean-template(1), cp-pkver(1).
