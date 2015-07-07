@@ -125,17 +125,7 @@ do
       mksource -p "$expanded" "${pass[@]}" || exit $?
 
       # propagate changed pkgver
-      oldpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$file")
-      newpkgver=$(grep -Po '(?<=^pkgver=)[^ ]*' "$expanded")
-      if [ $newpkgver != $oldpkgver ]
-      then
-        if [ -w "$file" ]
-        then
-          sed --follow-symlinks -i "s:^pkgver=[^ ]*:pkgver=$newpkgver:;s:^pkgrel=[^ ]*:pkgrel=1:" "$file"
-        else
-          printf "$0: $(gettext "%s is not writeable -- pkgver will not be updated")\n" "$file"
-        fi
-      fi
+      cp-pkgver "$expanded" "$file"
     ) || exit $? #)
   fi
 done

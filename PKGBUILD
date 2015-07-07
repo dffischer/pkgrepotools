@@ -21,6 +21,6 @@ build() {
 
 package() {
   cd $_gitname
-  install -Dt "$pkgdir/usr/bin" makepkg-expanded clean-template
+  install -Dt "$pkgdir/usr/bin" makepkg-expanded clean-template cp-pkgver
   install -Dm644 -t "$pkgdir/usr/share/man/man1" makepkg-expanded.1 clean-template.1
 }
