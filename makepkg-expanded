@@ -1,7 +1,9 @@
 #!/bin/bash
 
+# initialize gettext
 export TEXTDOMAIN='pacman-scripts'
 
+# parse arguments
 while [ "$1" ]; do
   case "$1" in
     -h)
@@ -30,6 +32,8 @@ templates=(
   --template-dir
   "$(realpath ${BASH_SOURCE[@]%/*})/makepkg-templates"
 )
+
+# process PKGBUILDs
 for path in ${packages[@]:-$(find ! -readable -prune -o -iname PKGBUILD -print)}
 do
   if [ ! -f "$path" ]
