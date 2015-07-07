@@ -14,13 +14,18 @@ makedepends=('ruby-ronn')
 
 # template input; name=git
 
-build() {
+find_executables() {
   cd $_gitname
-  ronn --roff makepkg-expanded.md clean-template.md cp-pkgver.md
+  executables=($(find -mindepth 1 -maxdepth 1 -executable -type f))
+}
+
+build() {
+  find_executables
+  ronn --roff ${executables[@]/%/.md}
 }
 
 package() {
-  cd $_gitname
-  install -Dt "$pkgdir/usr/bin" makepkg-expanded clean-template cp-pkgver
-  install -Dm644 -t "$pkgdir/usr/share/man/man1" makepkg-expanded.1 clean-template.1 cp-pkgver.1
+  find_executables
+  install -Dt "$pkgdir/usr/bin" ${executables[@]}
+  install -Dm644 -t "$pkgdir/usr/share/man/man1" *.1
 }
