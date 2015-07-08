@@ -15,9 +15,11 @@ add_all() {
   done < <(find ! -readable -prune -o -iname ${1:-PKGBUILD} -print0)
 }
 
-mksource () {
-  makepkg -S "$@"
-}
+function='
+  mksource () {
+    makepkg -S "$@"
+  }
+'
 
 while [ $OPTIND -le $# ]
 do
@@ -43,10 +45,10 @@ do
       a) add_all "$OPTARG" ;;
       t) templates+=(--template-dir "$(realpath "$OPTARG")") ;;
       b) extension="$OPTARG" ;;
-      B)
+      B) function='
         mksource() {
           :
-        } ;;
+        }' ;;
       u)
         if declare -f | grep -q sed
         then
@@ -120,12 +122,13 @@ do
         clean-template > "$expanded"
       [ ${PIPESTATUS[0]} -ne 0 ] && exit ${PIPESTATUS[0]}
 
-      # build
-      makepkg -p "$expanded" "${pass[@]}" || exit $?
-      mksource -p "$expanded" "${pass[@]}" || exit $?
-
-      # propagate changed pkgver
-      cp-pkgver "$expanded" "$file"
+      # process
+      bash -c "
+        $function
+        makepkg -p '$expanded' \"\$@\" || exit \$?
+        mksource -p '$expanded' \"\$@\" || exit \$?
+        exec cp-pkgver '$expanded' '$file'
+      " process-expanded "${pass[@]}" || exit $?
     ) || exit $? #)
   fi
 done
