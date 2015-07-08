@@ -123,12 +123,11 @@ do
       [ ${PIPESTATUS[0]} -ne 0 ] && exit ${PIPESTATUS[0]}
 
       # process
-      bash -c "
-        $function
-        makepkg -p '$expanded' \"\$@\" || exit \$?
-        mksource -p '$expanded' \"\$@\" || exit \$?
-        exec cp-pkgver '$expanded' '$file'
-      " process-expanded "${pass[@]}" || exit $?
+      bash -c "$function"'
+        makepkg -p "$1" "$@" || exit $?
+        mksource -p "$1" "$@" || exit $?
+        exec cp-pkgver "$1" "$2"
+      ' process-expanded "$expanded" "$file" "${pass[@]}" || exit $?
     ) || exit $? #)
   fi
 done
