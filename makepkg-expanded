@@ -23,7 +23,7 @@ function='
 
 while [ $OPTIND -le $# ]
 do
-  if getopts ':hp:a:t:b:Bul-:' argument
+  if getopts ':hp:a:t:b:BulE:-:' argument
   then
     case $argument in
       h)
@@ -39,6 +39,7 @@ do
         echo ' -B              do not generate source aurball, just build package'
         echo ' -u              keep template markers intact'
         echo ' -l              keep duplicate templates'
+        echo ' -E <command>    command to execute for each PKGBUILD'
         echo 'All other arguments are passed to makepkg.'
         exit ;;
       p) packages+=("$OPTARG") ;;
@@ -71,6 +72,7 @@ do
             sed '/# vim/d;x;$G;/# template/d;1d'
           }
         fi ;;
+      E) process="$OPTARG" ;;
       \?) pass+=("-$OPTARG") ;;
       -) lastarg=$((OPTIND - 1))
         case "${!lastarg}" in
@@ -123,11 +125,11 @@ do
       [ ${PIPESTATUS[0]} -ne 0 ] && exit ${PIPESTATUS[0]}
 
       # process
-      bash -c "$function"'
-        makepkg -p "$1" "$@" || exit $?
-        mksource -p "$1" "$@" || exit $?
-        exec cp-pkgver "$1" "$2"
-      ' process-expanded "$expanded" "$file" "${pass[@]}" || exit $?
+      bash -c "${process:-"$function
+        makepkg -p \"\$1\" \"\$@\" || exit \$?
+        mksource -p \"\$1\" \"\$@\" || exit \$?
+        exec cp-pkgver \"\$1\" \"\$2\"
+      "}" process-expanded "$expanded" "$file" "${pass[@]}" || exit $?
     ) || exit $? #)
   fi
 done

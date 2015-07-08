@@ -1,4 +1,4 @@
-makepkg-expanded(1) -- package expansion and build wrapper
+makepkg-expanded(1) -- process template expanded PKGBUILDs
 ==========================================================
 
 ## SYNOPSIS
@@ -8,11 +8,9 @@ makepkg-expanded(1) -- package expansion and build wrapper
 
 ## DESCRIPTION
 
-This is a wrapper around makepkg-template(1) and makepkg(1) that builds packages and their source tarballs without touching templates in the original PKGBUILD.
+This is a wrapper around makepkg-template(1) and makepkg(1) that can be used to build and distribute packages without touching templates in the original PKGBUILD.
 
-It does so by expanding the templates in a temporary file besides the original which is then cleaned and used for packaging. This leaves the template markers as they are while keeping the source tarball for the AUR free from template relics.
-
-Changes caused by a _pkgver_ function are propagated back to the original PKGBUILD.
+It does so by expanding the templates in a temporary file besides the original which is then cleaned and used for further processing. This leaves the template markers as they are while keeping the AUR free from template relics.
 
 
 ## OPTIONS
@@ -44,7 +42,7 @@ Changes caused by a _pkgver_ function are propagated back to the original PKGBUI
   - `-b` _suffix_:
     Specifies a suffix to prepend to the name of the original build script to compose the file name to store the intermediate expanded content to. They will always end up in the same directory as the original.
 
-    The default is _.expanded_, so without any options, the script actually passed to makepkg(1) will be called _PKGBUILD.expanded_.
+    The default is _.expanded_, so without any options, the script actually processed will be called _PKGBUILD.expanded_.
 
   - `-B`:
     Do not generate a source aurball, just build the given package(s).
@@ -63,14 +61,27 @@ Changes caused by a _pkgver_ function are propagated back to the original PKGBUI
 
     This completely avoids clean-template invocation and instead replaces it with sed, as mentioned in the clean-template(1) manual page. When the `-u` option is also specified, cleaning is skipped completely.
 
-All further options are directly passed through to every invocation of makepkg(1).
+  - `-E` _command_:
+    Command to execute after expanding each PKGBUILD.
+
+    The given snippet will be run through `bash -c` and receive the file names of the expanded and original PKGBUILD as its respective arguments, followed by any options that makepkg-expanded itself did not recognize. It will be run from the directory where the processed PKGBUILD resides in.
+
+    If any execution yields an exit code other than 0, makepkg-expanded will abort instantly with the same exit code.
+
+    The default command first invokes makepkg(1) on the expanded PKGBUILD, followed by makepkg -S, if no `-B` option was given and then uses cp-pkgver(1) to propagate any version updated back to the original if the former two completed successfully. This would be roughly equal to passing 'makepkg -p $1; makepkg -Sp $1; cp-pkgver $1 $2' with this option.
+
+    Using a custom command will disable the passing of any further unrecognized options. But they can instead be included in the command string itself. Note that this option also renders `-B` useless.
+
+All further options are directly passed through to every invocation of makepkg(1), apart from when an `-E` argument is present, in which case further arguments are silently ignored.
 
 
 ## EXIT STATUS
 
-When the program exits with status 0, it is safe to assume that the package and source tarball were created and _pkgver_ changes propagated.
+When the program exits with status 0, it is safe to assume that all PKGBUILDs were successfully processed. This means that all `-E` statements exited with code 0 or, in the absence of such, all packages and source tarballs were created.
 
-When makepkg-template(1) or makepkg(1) fail, their exit code is passed through.
+When makepkg-template(1) fails on any PKGBUILD, the program immediatly halts passing through its exit code.
+
+When the processing fails, the exit code of the code snippet is passed through. By default, failures in makepkg(1) are propagated while cp-pkver(1) may silently fail.
 
 
 ## BUGS
