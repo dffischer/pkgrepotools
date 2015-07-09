@@ -8,6 +8,7 @@ export GIT_INDEX_FILE="$tmpdir/index"
 
 srcinfo="$tmpdir/srcinfo"
 mksrcinfo -o "$srcinfo"
+pkgbase=$(grep -Po '(?<=pkgbase = ).*' "$srcinfo")
 
 # Compose new revision.
 git update-index --add --cacheinfo \
@@ -15,17 +16,17 @@ git update-index --add --cacheinfo \
   PKGBUILD
 
 # Commit, if necessary.
-if git show-ref --verify --quiet refs/heads/aurbranch
+if git show-ref --verify --quiet "refs/heads/aur/$pkgbase"
 then
-  if ! git diff-index --cached --quiet aurbranch --
+  if ! git diff-index --cached --quiet "aur/$pkgbase" --
   then
-    git update-ref refs/heads/aurbranch $(\
+    git update-ref "refs/heads/aur/$pkgbase" $(\
       git commit-tree $(git write-tree) \
       -m "update AUR distribution branch" \
-      -p aurbranch)
+      -p "aur/$pkgbase")
   fi
 else
-  git update-ref refs/heads/aurbranch $(\
+  git update-ref "refs/heads/aur/$pkgbase" $(\
     git commit-tree $(git write-tree) \
     -m "create AUR distribution branch")
 fi

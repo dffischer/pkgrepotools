@@ -10,7 +10,7 @@ aurbranch(1) -- maintain a git branch for AUR distibution
 
 This program helps to create and update a branch in a local git repository to be pushed to the Arch User Repository.
 
-It automatically generates a .SRCINFO file from a PKGBUILD in the local working directory and commits changes in both on top of a branch named "aurbranch" found in the git repository it is run from within. If this branch does not exist, it will be created.
+It automatically generates a .SRCINFO file from a PKGBUILD in the local working directory and commits changes in both on top of a dedicated branch found in the git repository it is run from within. This branch is named like the pkgbase variable as denoted by the PKGBUILD, prefixed with "aur/". If this branch does not exist, it will be created.
 
 All this is done without altering the state of the repository or its working tree and thus save to run in dirty worktrees.
 
