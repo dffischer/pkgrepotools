@@ -11,9 +11,14 @@ mksrcinfo -o "$srcinfo"
 pkgbase=$(grep -Po '(?<=pkgbase = ).*' "$srcinfo")
 
 # Compose new revision.
-git update-index --add --cacheinfo \
-  644,$(git hash-object --path .SRCINFO -w "$srcinfo"),.SRCINFO \
-  PKGBUILD
+# add <file> to the index at <location>. Without the latter, the file
+# is placed as if it was rooted at the current working directory.
+add() {
+  git update-index --add --cacheinfo \
+    $(stat -c '%a' $1),$(git hash-object --path "${2:-$1}" -w "$1"),"${2:-$1}"
+}
+add "$srcinfo" .SRCINFO
+add PKGBUILD
 
 # Commit, if necessary.
 if git show-ref --verify --quiet "refs/heads/aur/$pkgbase"
