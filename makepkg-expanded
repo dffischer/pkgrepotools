@@ -5,7 +5,7 @@ export TEXTDOMAIN='pacman-scripts'
 
 # parse arguments
 invalid_option() {
-  echo "$0: $(gettext "invalid option") -- '-'" >&2
+  echo "$0: $(gettext "invalid option") -- '$OPTARG'" >&2
   exit 1
 }
 
@@ -15,68 +15,59 @@ add_all() {
   done < <(find ! -readable -prune -o -iname ${1:-PKGBUILD} -print0)
 }
 
-while [ $OPTIND -le $# ]
+while getopts ':hp:a:t:b:ulE:' argument
 do
-  if getopts ':hp:a:t:b:ulE:-:' argument
-  then
-    case $argument in
-      h)
-        echo "usage: $0 [options]"
-        echo 'builds the PKGBUILD found in the current directory, expanding makepkg-templates' \
-          'but leaving the original intact apart from the version numbers.'
-        echo 'Valid options are:'
-        echo ' -h              show this help text'
-        echo ' -p <script>     select an alternative file instead of PKGBUILD'
-        echo ' -a [pattern]    select all files matching the given pattern, or all PKGBUILDs'
-        echo ' -t <dir>        directory to look up templates in'
-        echo ' -b <extension>  extension for intermediate expanded build scripts'
-        echo ' -u              keep template markers intact'
-        echo ' -l              keep duplicate templates'
-        echo ' -E <command>    command to execute for each PKGBUILD'
-        exit ;;
-      p) packages+=("$OPTARG") ;;
-      a) add_all "$OPTARG" ;;
-      t) templates+=(--template-dir "$(realpath "$OPTARG")") ;;
-      b) extension="$OPTARG" ;;
-      u)
-        if declare -f | grep -q sed
-        then
-          clean-template() {
-            cat
-          }
-        else
-          clean-template() {
-            command clean-template -u
-          }
-        fi ;;
-      l)
-        if declare -f | grep -q command
-        then
-          clean-template() {
-            cat
-          }
-        else
-          clean-template() {
-            sed '/# vim/d;x;$G;/# template/d;1d'
-          }
-        fi ;;
-      E) process="$OPTARG" ;;
-      -) lastarg=$((OPTIND - 1))
-        if [[ "${!lastarg}" != --* ]]
-        then
-          invalid_option
-        fi ;;
-      :)
-        case "$OPTARG" in
-          a) add_all ;;
-          -) invalid_option ;;
-          *) echo "$0: $(gettext "option requires an argument") -- '-$OPTARG'" >&2
-            exit 1 ;;
-        esac
-    esac
-  else
-    let OPTIND++
-  fi
+  case $argument in
+    h)
+      echo "usage: $0 [options]"
+      echo 'builds the PKGBUILD found in the current directory, expanding makepkg-templates' \
+        'but leaving the original intact apart from the version numbers.'
+      echo 'Valid options are:'
+      echo ' -h              show this help text'
+      echo ' -p <script>     select an alternative file instead of PKGBUILD'
+      echo ' -a [pattern]    select all files matching the given pattern, or all PKGBUILDs'
+      echo ' -t <dir>        directory to look up templates in'
+      echo ' -b <extension>  extension for intermediate expanded build scripts'
+      echo ' -u              keep template markers intact'
+      echo ' -l              keep duplicate templates'
+      echo ' -E <command>    command to execute for each PKGBUILD'
+      exit ;;
+    p) packages+=("$OPTARG") ;;
+    a) add_all "$OPTARG" ;;
+    t) templates+=(--template-dir "$(realpath "$OPTARG")") ;;
+    b) extension="$OPTARG" ;;
+    u)
+      if declare -f | grep -q sed
+      then
+        clean-template() {
+          cat
+        }
+      else
+        clean-template() {
+          command clean-template -u
+        }
+      fi ;;
+    l)
+      if declare -f | grep -q command
+      then
+        clean-template() {
+          cat
+        }
+      else
+        clean-template() {
+          sed '/# vim/d;x;$G;/# template/d;1d'
+        }
+      fi ;;
+    E) process="$OPTARG" ;;
+    \?) invalid_option ;;
+    :)
+      case "$OPTARG" in
+        a) add_all ;;
+        -) invalid_option ;;  # No long options.
+        *) echo "$0: $(gettext "option requires an argument") -- '-$OPTARG'" >&2
+          exit 1 ;;
+      esac
+  esac
 done
 
 if [ "${#templates[@]}" -le 0 ]

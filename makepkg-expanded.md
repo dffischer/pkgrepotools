@@ -64,8 +64,6 @@ It does so by expanding the templates in a temporary file besides the original w
     The default command invokes makepkg(1) on the expanded PKGBUILD and then uses cp-pkgver(1) to propagate any version updated back to the original if the former completed successfully. This would be roughly equal to passing 'makepkg -p $1; cp-pkgver $1 $2' with this option. To pass additional options, alter this expression to your liking. For example, passing 'makepkg -Sp $1' here instead would build a source aurball.
 
 
-All other options are silently ignored.
-
 
 ## EXIT STATUS
 
