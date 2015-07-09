@@ -44,15 +44,8 @@ It does so by expanding the templates in a temporary file besides the original w
 
     The default is _.expanded_, so without any options, the script actually processed will be called _PKGBUILD.expanded_.
 
-  - `-B`:
-    Do not generate a source aurball, just build the given package(s).
-
-    This suppresses the execution of `makepkg -S` so that makepkg(1) will only be invoked one time per package, to build it.
-
-    As all unrecognized options are passed to makepkg(1), creating just the aurball without packaging beforehand can be achieved by passing `-BS`. However, this is discouraged as it would ignore any _pkgver_ function. Building the package first updates the version numbers so that the aurball will then contain current values.
-
   - `-u`:
-    This option is passed to clean-template(1) which is invoked before packaging and creation of the source aurball to leave template markers and mode lines intact. Duplicate templates will still be removed.
+    This option is passed to clean-template(1) which is invoked immediately after template expansion to leave template markers and mode lines intact. Duplicate templates will still be removed.
 
     When the `-l` option is also specified, cleaning is skipped completely.
 
@@ -68,16 +61,16 @@ It does so by expanding the templates in a temporary file besides the original w
 
     If any execution yields an exit code other than 0, makepkg-expanded will abort instantly with the same exit code.
 
-    The default command first invokes makepkg(1) on the expanded PKGBUILD, followed by makepkg -S, if no `-B` option was given and then uses cp-pkgver(1) to propagate any version updated back to the original if the former two completed successfully. This would be roughly equal to passing 'makepkg -p $1; makepkg -Sp $1; cp-pkgver $1 $2' with this option.
+    The default command invokes makepkg(1) on the expanded PKGBUILD and then uses cp-pkgver(1) to propagate any version updated back to the original if the former completed successfully. This would be roughly equal to passing 'makepkg -p $1; cp-pkgver $1 $2' with this option. To build a source aurball, one could use 'makepkg -Sp $1' here instead.
 
-    Using a custom command will disable the passing of any further unrecognized options. But they can instead be included in the command string itself. Note that this option also renders `-B` useless.
+    Using a custom command will disable the passing of any further unrecognized options. But they can instead be included in the command string itself.
 
 All further options are directly passed through to every invocation of makepkg(1), apart from when an `-E` argument is present, in which case further arguments are silently ignored.
 
 
 ## EXIT STATUS
 
-When the program exits with status 0, it is safe to assume that all PKGBUILDs were successfully processed. This means that all `-E` statements exited with code 0 or, in the absence of such, all packages and source tarballs were created.
+When the program exits with status 0, it is safe to assume that all PKGBUILDs were successfully processed. This means that all `-E` statements exited with code 0 or, in the absence of such, all packages were created.
 
 When makepkg-template(1) fails on any PKGBUILD, the program immediatly halts passing through its exit code.
 

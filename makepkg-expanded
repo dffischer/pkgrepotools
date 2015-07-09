@@ -15,15 +15,9 @@ add_all() {
   done < <(find ! -readable -prune -o -iname ${1:-PKGBUILD} -print0)
 }
 
-function='
-  mksource () {
-    makepkg -S "$@"
-  }
-'
-
 while [ $OPTIND -le $# ]
 do
-  if getopts ':hp:a:t:b:BulE:-:' argument
+  if getopts ':hp:a:t:b:ulE:-:' argument
   then
     case $argument in
       h)
@@ -36,7 +30,6 @@ do
         echo ' -a [pattern]    select all files matching the given pattern, or all PKGBUILDs'
         echo ' -t <dir>        directory to look up templates in'
         echo ' -b <extension>  extension for intermediate expanded build scripts'
-        echo ' -B              do not generate source aurball, just build package'
         echo ' -u              keep template markers intact'
         echo ' -l              keep duplicate templates'
         echo ' -E <command>    command to execute for each PKGBUILD'
@@ -46,10 +39,6 @@ do
       a) add_all "$OPTARG" ;;
       t) templates+=(--template-dir "$(realpath "$OPTARG")") ;;
       b) extension="$OPTARG" ;;
-      B) function='
-        mksource() {
-          :
-        }' ;;
       u)
         if declare -f | grep -q sed
         then
@@ -105,6 +94,11 @@ then
   fi
 fi
 
+: ${process:='
+  makepkg -p "$1" "$@" || exit $?
+  exec cp-pkgver "$1" "$2"
+'}
+
 
 # process PKGBUILDs
 for path in "${packages[@]:-PKGBUILD}"
@@ -125,11 +119,7 @@ do
       [ ${PIPESTATUS[0]} -ne 0 ] && exit ${PIPESTATUS[0]}
 
       # process
-      bash -c "${process:-"$function
-        makepkg -p \"\$1\" \"\$@\" || exit \$?
-        mksource -p \"\$1\" \"\$@\" || exit \$?
-        exec cp-pkgver \"\$1\" \"\$2\"
-      "}" process-expanded "$expanded" "$file" "${pass[@]}" || exit $?
+      bash -c "$process" process-expanded "$expanded" "$file" || exit $?
     ) || exit $? #)
   fi
 done
