@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Setup a temporary index.
+export GIT_INDEX_FILE="$(mktemp -u --tmpdir index.XXXXXXXXXX)"
+trap "rm '$GIT_INDEX_FILE'" EXIT
+
+# Compose new revision.
+git update-index --add --cacheinfo \
+  644,$(mksrcinfo -o /dev/stdout | git hash-object --stdin --path .SRCINFO -w),.SRCINFO \
+  PKGBUILD
+
+# Commit, if necessary.
+if git show-ref --verify --quiet refs/heads/aurbranch
+then
+  if ! git diff-index --cached --quiet aurbranch --
+  then
+    git update-ref refs/heads/aurbranch $(\
+      git commit-tree $(git write-tree) \
+      -m "update AUR distribution branch" \
+      -p aurbranch)
+  fi
+else
+  git update-ref refs/heads/aurbranch $(\
+    git commit-tree $(git write-tree) \
+    -m "create AUR distribution branch")
+fi
