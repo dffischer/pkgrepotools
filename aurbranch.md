@@ -20,6 +20,11 @@ All this is done without altering the state of the repository or its working tre
   - `-h`:
     Shows a summary of the options.
 
+  - `-p` _buildscript_:
+    Select an alternative file to include instead of _PKGBUILD_.
+
+    This file will be stored to the distribution branch under the name _PKGBUILD_, regardless of its original name. It will also be used to generate the .SRCINFO from to store beside it.
+
 
 ## BUGS
 

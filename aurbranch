@@ -1,14 +1,16 @@
 #!/bin/bash
 
 # Parse arguments.
-while getopts 'h' argument
+while getopts 'hp:' argument
 do
   case $argument in
     h)
       echo "usage: $0 [options]"
       echo 'Commit changes in the PKGBUILD to an AUR distribution branch.'
-      echo ' -h  show this help text'
+      echo ' -h           show this help text'
+      echo ' -p <script>  file to use in place of PKGBUILD'
       exit ;;
+    p) pkgbuild="$OPTARG" ;;
     \?) exit 1 ;;
   esac
 done
@@ -20,7 +22,7 @@ trap "rm -r '$tmpdir'" EXIT
 export GIT_INDEX_FILE="$tmpdir/index"
 
 srcinfo="$tmpdir/srcinfo"
-mksrcinfo -o "$srcinfo"
+mksrcinfo -o "$srcinfo" "${pkgbuild:=PKGBUILD}"
 pkgbase=$(grep -Po '(?<=pkgbase = ).*' "$srcinfo")
 
 # Compose new revision.
@@ -31,7 +33,7 @@ add() {
     $(stat -c '%a' $1),$(git hash-object --path "${2:-$1}" -w "$1"),"${2:-$1}"
 }
 add "$srcinfo" .SRCINFO
-add PKGBUILD
+add "$pkgbuild" PKGBUILD
 
 # Commit, if necessary.
 if git show-ref --verify --quiet "refs/heads/aur/$pkgbase"
