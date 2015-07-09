@@ -6,9 +6,12 @@ trap "rm -r '$tmpdir'" EXIT
 
 export GIT_INDEX_FILE="$tmpdir/index"
 
+srcinfo="$tmpdir/srcinfo"
+mksrcinfo -o "$srcinfo"
+
 # Compose new revision.
 git update-index --add --cacheinfo \
-  644,$(mksrcinfo -o /dev/stdout | git hash-object --stdin --path .SRCINFO -w),.SRCINFO \
+  644,$(git hash-object --path .SRCINFO -w "$srcinfo"),.SRCINFO \
   PKGBUILD
 
 # Commit, if necessary.
