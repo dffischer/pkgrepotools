@@ -57,15 +57,14 @@ It does so by expanding the templates in a temporary file besides the original w
   - `-E` _command_:
     Command to execute after expanding each PKGBUILD.
 
-    The given snippet will be run through `bash -c` and receive the file names of the expanded and original PKGBUILD as its respective arguments, followed by any options that makepkg-expanded itself did not recognize. It will be run from the directory where the processed PKGBUILD resides in.
+    The given snippet will be run through `bash -c` and receive the file names of the expanded and original PKGBUILD as its respective arguments. It will be run from the directory where the processed PKGBUILD resides in.
 
     If any execution yields an exit code other than 0, makepkg-expanded will abort instantly with the same exit code.
 
-    The default command invokes makepkg(1) on the expanded PKGBUILD and then uses cp-pkgver(1) to propagate any version updated back to the original if the former completed successfully. This would be roughly equal to passing 'makepkg -p $1; cp-pkgver $1 $2' with this option. To build a source aurball, one could use 'makepkg -Sp $1' here instead.
+    The default command invokes makepkg(1) on the expanded PKGBUILD and then uses cp-pkgver(1) to propagate any version updated back to the original if the former completed successfully. This would be roughly equal to passing 'makepkg -p $1; cp-pkgver $1 $2' with this option. To pass additional options, alter this expression to your liking. For example, passing 'makepkg -Sp $1' here instead would build a source aurball.
 
-    Using a custom command will disable the passing of any further unrecognized options. But they can instead be included in the command string itself.
 
-All further options are directly passed through to every invocation of makepkg(1), apart from when an `-E` argument is present, in which case further arguments are silently ignored.
+All other options are silently ignored.
 
 
 ## EXIT STATUS

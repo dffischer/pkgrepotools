@@ -33,7 +33,6 @@ do
         echo ' -u              keep template markers intact'
         echo ' -l              keep duplicate templates'
         echo ' -E <command>    command to execute for each PKGBUILD'
-        echo 'All other arguments are passed to makepkg.'
         exit ;;
       p) packages+=("$OPTARG") ;;
       a) add_all "$OPTARG" ;;
@@ -62,14 +61,11 @@ do
           }
         fi ;;
       E) process="$OPTARG" ;;
-      \?) pass+=("-$OPTARG") ;;
       -) lastarg=$((OPTIND - 1))
-        case "${!lastarg}" in
-          # Long arguments may be tried to be handled here. Avoid shift
-          # though, it most probably breaks the surrounding routine.
-          --*) pass+=("--$OPTARG") ;;
-          *) invalid_option ;;
-        esac ;;
+        if [[ "${!lastarg}" != --* ]]
+        then
+          invalid_option
+        fi ;;
       :)
         case "$OPTARG" in
           a) add_all ;;
@@ -79,7 +75,6 @@ do
         esac
     esac
   else
-    pass+=("${!OPTIND}")
     let OPTIND++
   fi
 done
@@ -95,7 +90,7 @@ then
 fi
 
 : ${process:='
-  makepkg -p "$1" "$@" || exit $?
+  makepkg -p "$1" || exit $?
   exec cp-pkgver "$1" "$2"
 '}
 
