@@ -28,7 +28,7 @@ This program cleans every PKGBUILD(5) it is passed from some of the chaos makepk
   - `-h`:
     Shows a summary of the options.
 
-  - `-u`:
+  - `-m`:
     Only remove duplicates, leave mode lines and markers of kept templates intact.
 
   Note that there is no option to just remove template markers and modelines while leaving duplicates alone. This is beacause the same task can be performed more efficiently by the one-liner `sed '/# vim/d;x;$G;/# template/d;1d'`.

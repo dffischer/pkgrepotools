@@ -39,22 +39,22 @@ It does so by expanding the templates in a temporary file besides the original w
 
     Without any `-t`, the system-wide default is used, which normally is _/usr/share/makepkg-template_. When makepkg-template is invoked from anywhere within a git(1) repository, it will also use templates from a _makepkg-templates_ directory located in the root of the repository, if such exists. Note that an explicit statement of `-t` overwrites these defaults. So if they shall be mixed with more directories, they have to be specified explicitely.
 
-  - `-b` _suffix_:
+  - `-e` _suffix_:
     Specifies a suffix to prepend to the name of the original build script to compose the file name to store the intermediate expanded content to. They will always end up in the same directory as the original.
 
     The default is _.expanded_, so without any options, the script actually processed will be called _PKGBUILD.expanded_.
 
-  - `-u`:
+  - `-m`:
     This option is passed to clean-template(1) which is invoked immediately after template expansion to leave template markers and mode lines intact. Duplicate templates will still be removed.
 
     When the `-l` option is also specified, cleaning is skipped completely.
 
-  - `-l`:
+  - `-d`:
     Only remove mode lines and template markers instead when cleaning and leave duplicate templates untouched.
 
     This completely avoids clean-template invocation and instead replaces it with sed, as mentioned in the clean-template(1) manual page. When the `-u` option is also specified, cleaning is skipped completely.
 
-  - `-E` _command_:
+  - `-r` _command_:
     Command to execute after expanding each PKGBUILD.
 
     The given snippet will be run through `bash -c` and receive the file names of the expanded and original PKGBUILD as its respective arguments. It will be run from the directory where the processed PKGBUILD resides in.

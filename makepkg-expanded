@@ -15,7 +15,7 @@ add_all() {
   done < <(find ! -readable -prune -o -iname ${1:-PKGBUILD} -print0)
 }
 
-while getopts ':hp:a:t:b:ulE:' argument
+while getopts ':hp:a:t:e:mdr:' argument
 do
   case $argument in
     h)
@@ -27,16 +27,16 @@ do
       echo ' -p <script>     select an alternative file instead of PKGBUILD'
       echo ' -a [pattern]    select all files matching the given pattern, or all PKGBUILDs'
       echo ' -t <dir>        directory to look up templates in'
-      echo ' -b <extension>  extension for intermediate expanded build scripts'
-      echo ' -u              keep template markers intact'
-      echo ' -l              keep duplicate templates'
-      echo ' -E <command>    command to execute for each PKGBUILD'
+      echo ' -e <extension>  extension for intermediate expanded build scripts'
+      echo ' -m              keep template markers intact'
+      echo ' -d              keep duplicate templates'
+      echo ' -r <command>    command to execute for each PKGBUILD'
       exit ;;
     p) packages+=("$OPTARG") ;;
     a) add_all "$OPTARG" ;;
     t) templates+=(--template-dir "$(realpath "$OPTARG")") ;;
-    b) extension="$OPTARG" ;;
-    u)
+    e) extension="$OPTARG" ;;
+    m)
       if declare -f | grep -q sed
       then
         clean-template() {
@@ -44,10 +44,10 @@ do
         }
       else
         clean-template() {
-          command clean-template -u
+          command clean-template -m
         }
       fi ;;
-    l)
+    d)
       if declare -f | grep -q command
       then
         clean-template() {
@@ -58,7 +58,7 @@ do
           sed '/# vim/d;x;$G;/# template/d;1d'
         }
       fi ;;
-    E) process="$OPTARG" ;;
+    r) process="$OPTARG" ;;
     \?) invalid_option ;;
     :)
       case "$OPTARG" in

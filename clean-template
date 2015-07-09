@@ -5,16 +5,16 @@ skip() {
   continue
 }
 
-while getopts 'hu' argument
+while getopts 'hm' argument
 do
   case $argument in
     h)
       echo "usage: $0 [options] < PKGBUILD"
       echo 'cleans a given PKGBUILD'
       echo ' -h  show this help text'
-      echo ' -u  only remove duplicates'
+      echo ' -m  only remove duplicates'
       exit ;;
-    u)
+    m)
       search='^[[:space:]]*# (template\ (start.*name=([[:alnum:]-]*))).*$'
       skip() {
         :
