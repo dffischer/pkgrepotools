@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# Parse arguments.
+while getopts 'h' argument
+do
+  case $argument in
+    h)
+      echo "usage: $0 [options]"
+      echo 'Commit changes in the PKGBUILD to an AUR distribution branch.'
+      echo ' -h  show this help text'
+      exit ;;
+    \?) exit 1 ;;
+  esac
+done
+
 # Compose resources in a temporary directory.
 tmpdir="$(mktemp -d --tmpdir aurbranch.XXXXXXXXXX)"
 trap "rm -r '$tmpdir'" EXIT
