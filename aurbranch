@@ -35,7 +35,7 @@ add() {
 }
 for file
 do
-  if [ "$file" != "$pkgbuild" ]
+  if [ "$file" != "$pkgbuild" -a "${file##*/}" != PKGBUILD ]
   then
     add "$file"
   fi
