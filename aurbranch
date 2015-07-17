@@ -16,6 +16,7 @@ do
 done
 shift $(($OPTIND - 1))
 
+
 # Compose resources in a temporary directory.
 tmpdir="$(mktemp -d --tmpdir aurbranch.XXXXXXXXXX)"
 trap "rm -r '$tmpdir'" EXIT
@@ -26,13 +27,16 @@ srcinfo="$tmpdir/srcinfo"
 mksrcinfo -o "$srcinfo" "${pkgbuild:=PKGBUILD}"
 pkgbase=$(grep -Po '(?<=pkgbase = ).*' "$srcinfo")
 
+
 # Compose new revision.
+
 # add <file> to the index at <location>. Without the latter, the file
 # is placed as if it was rooted at the current working directory.
 add() {
   git update-index --add --cacheinfo \
     $(stat -c '%a' $1),$(git hash-object --path "${2:-$1}" -w "$1"),"${2:-$1}"
 }
+
 for file
 do
   if [ "$file" != "$pkgbuild" -a "${file##*/}" != PKGBUILD ]
@@ -40,8 +44,10 @@ do
     add "$file"
   fi
 done
+
 add "$srcinfo" .SRCINFO
 add "$pkgbuild" PKGBUILD
+
 
 # Commit, if necessary.
 if git show-ref --verify --quiet "refs/heads/aur/$pkgbase"
