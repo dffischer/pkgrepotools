@@ -3,7 +3,7 @@ aurbranch(1) -- maintain a git branch for AUR distibution
 
 ## SYNOPSIS
 
-`aurbranch` [`options`]
+`aurbranch` [`options`] <additional files>
 
 
 ## DESCRIPTION
@@ -24,6 +24,10 @@ All this is done without altering the state of the repository or its working tre
     Select an alternative file to include instead of _PKGBUILD_.
 
     This file will be stored to the distribution branch under the name _PKGBUILD_, regardless of its original name. It will also be used to generate the .SRCINFO from to store beside it.
+
+    If a file named PKGBUILD is also specified as additional file, it will be ignored in favor of this file.
+
+All other arguments are treated as further files to include when composing the branch.
 
 
 ## BUGS

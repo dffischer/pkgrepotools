@@ -5,7 +5,7 @@ while getopts 'hp:' argument
 do
   case $argument in
     h)
-      echo "usage: $0 [options]"
+      echo "usage: $0 [options] <additional files>"
       echo 'Commit changes in the PKGBUILD to an AUR distribution branch.'
       echo ' -h           show this help text'
       echo ' -p <script>  file to use in place of PKGBUILD'
@@ -14,6 +14,7 @@ do
     \?) exit 1 ;;
   esac
 done
+shift $(($OPTIND - 1))
 
 # Compose resources in a temporary directory.
 tmpdir="$(mktemp -d --tmpdir aurbranch.XXXXXXXXXX)"
@@ -32,6 +33,10 @@ add() {
   git update-index --add --cacheinfo \
     $(stat -c '%a' $1),$(git hash-object --path "${2:-$1}" -w "$1"),"${2:-$1}"
 }
+for file
+do
+  add "$file"
+done
 add "$srcinfo" .SRCINFO
 add "$pkgbuild" PKGBUILD
 
