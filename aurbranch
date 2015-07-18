@@ -52,15 +52,19 @@ add "$pkgbuild" PKGBUILD
 # Commit, if necessary.
 if git show-ref --verify --quiet "refs/heads/aur/$pkgbase"
 then
-  if ! git diff-index --cached --quiet "aur/$pkgbase" --
+  if git diff-index --cached --quiet "aur/$pkgbase" --
   then
-    git update-ref "refs/heads/aur/$pkgbase" $(\
-      git commit-tree $(git write-tree) \
-      -m "update AUR distribution branch" \
-      -p "aur/$pkgbase")
+    # Nothing changed, nothing to commit.
+    exit
+  else
+    operation=updated
+    parent=(-p "aur/$pkgbase")
   fi
 else
-  git update-ref "refs/heads/aur/$pkgbase" $(\
-    git commit-tree $(git write-tree) \
-    -m "create AUR distribution branch")
+  operation=created
 fi
+
+git update-ref "refs/heads/aur/$pkgbase" $(\
+  git commit-tree $(git write-tree) \
+  -m "$operation AUR distribution branch" \
+  "${parent[@]}" )
