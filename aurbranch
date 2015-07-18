@@ -49,7 +49,7 @@ add "$srcinfo" .SRCINFO
 add "$pkgbuild" PKGBUILD
 
 
-# Commit, if necessary.
+# Check commit neccessity and branch existence.
 if git show-ref --verify --quiet "$branch"
 then
   if git diff-index --cached --quiet "$branch" --
@@ -64,7 +64,13 @@ else
   operation=created
 fi
 
+# Compose commit message.
+message="$tmpdir/COMMIT_EDITMSG"
+echo "$operation AUR distribution branch" > "$message"
+eval $(git var GIT_EDITOR) "$message"
+
+
+# Commit.
 git update-ref "$branch" $(\
   git commit-tree $(git write-tree) \
-  -m "$operation AUR distribution branch" \
-  "${parent[@]}" )
+  -F "$message" "${parent[@]}" )
