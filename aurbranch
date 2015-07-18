@@ -49,7 +49,8 @@ add "$srcinfo" .SRCINFO
 add "$pkgbuild" PKGBUILD
 
 
-# Check commit neccessity and branch existence.
+# Propose commit message, if necessary.
+message="$tmpdir/COMMIT_EDITMSG"
 if git show-ref --verify --quiet "$branch"
 then
   if git diff-index --cached --quiet "$branch" --
@@ -57,16 +58,14 @@ then
     # Nothing changed, nothing to commit.
     exit
   else
-    operation=updated
     parent=(-p "$branch")
+    git log -1 --format=%B -- "$pkgbuild" "$@" > "$message"
   fi
 else
-  operation=created
+  echo "create AUR distribution branch" > "$message"
 fi
 
-# Compose commit message.
-message="$tmpdir/COMMIT_EDITMSG"
-echo "$operation AUR distribution branch" > "$message"
+# Edit commit message.
 eval $(git var GIT_EDITOR) "$message"
 
 
