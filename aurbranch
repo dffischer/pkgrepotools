@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# initialize gettext
+export TEXTDOMAIN='git'
+
 # Parse arguments.
 while getopts 'hp:' argument
 do
@@ -50,6 +53,25 @@ add "$pkgbuild" PKGBUILD
 
 
 # Propose commit message, if necessary.
+
+# This separator tells a commit message apart from unprefixed comments.
+# It is taken from git commit -v.
+snip="------------------------ >8 ------------------------"
+
+# Output a $snip line, properly explained and commented.
+snipline() {
+  echo "$snip"
+  gettext $'Do not touch the line above.\nEverything below will be removed.'
+}
+
+# Print information about how the given <tree-ish> differs from the index, properly
+# separated by a snip line. If no argument is given, the constant empty tree is assumed.
+diffinfo() {
+  snipline | git stripspace -c
+  git diff-index -p --stat --cached --no-color \
+    "${1:-4b825dc642cb6eb9a060e54bf8d69288fbee4904}"
+}
+
 message="$tmpdir/COMMIT_EDITMSG"
 if git show-ref --verify --quiet "$branch"
 then
@@ -59,14 +81,21 @@ then
     exit
   else
     parent=(-p "$branch")
-    git log -1 --format=%B -- "$pkgbuild" "$@" > "$message"
+    ( git log -1 --format=%B -- "$pkgbuild" "$@"
+      diffinfo "$branch"
+    ) > "$message"
   fi
 else
-  echo "create AUR distribution branch" > "$message"
+  ( echo "create AUR distribution branch"
+    diffinfo
+  ) > "$message"
 fi
 
 # Edit commit message.
 eval $(git var GIT_EDITOR) "$message"
+
+# Clean everything below snip line.
+sed -i "/$snip/,\$d" "$message"
 
 
 # Commit.
