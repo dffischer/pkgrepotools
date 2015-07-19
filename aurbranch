@@ -4,7 +4,7 @@
 export TEXTDOMAIN='git'
 
 # Parse arguments.
-while getopts 'hp:s:' argument
+while getopts 'hp:s:b:' argument
 do
   case $argument in
     h)
@@ -13,9 +13,11 @@ do
       echo ' -h              show this help text'
       echo ' -p <script>     file to use in place of PKGBUILD'
       echo ' -s <separator>  separator between real file name and path in repository'
+      echo ' -b <branch>     branch to commit to'
       exit ;;
     p) pkgbuild="$OPTARG" ;;
     s) separator="$OPTARG" ;;
+    b) branch="refs/heads/$OPTARG" ;;
     \?) exit 1 ;;
   esac
 done
@@ -30,7 +32,6 @@ export GIT_INDEX_FILE="$tmpdir/index"
 
 srcinfo="$tmpdir/srcinfo"
 mksrcinfo -o "$srcinfo" "${pkgbuild:=PKGBUILD}"
-branch="refs/heads/aur/$(grep -Po '(?<=pkgbase = ).*' "$srcinfo")"
 
 
 # Compose new revision.
@@ -82,10 +83,10 @@ diffinfo() {
 }
 
 message="$tmpdir/COMMIT_EDITMSG"
-( git log -1 --format=%B -- "$pkgbuild" "${@%${separator}*}"
+{ git log -1 --format=%B -- "$pkgbuild" "${@%${separator}*}"
   snipline | git stripspace -c
-  diffinfo "$branch"
-) > "$message"
+  diffinfo "${branch:="refs/heads/aur/$(grep -Po '(?<=pkgbase = ).*' "$srcinfo")"}"
+} > "$message"
 case $? in
   0) # Nothing changed, nothing to commit.
     exit ;;

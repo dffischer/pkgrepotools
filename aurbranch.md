@@ -10,7 +10,7 @@ aurbranch(1) -- maintain a git branch for AUR distibution
 
 This program helps to create and update a branch in a local git repository to be pushed to the Arch User Repository.
 
-It automatically generates a .SRCINFO file from a PKGBUILD in the local working directory and commits changes in both on top of a dedicated branch found in the git repository it is run from within. This branch is named like the pkgbase variable as denoted by the PKGBUILD, prefixed with "aur/". If this branch does not exist, it will be created.
+It automatically generates a .SRCINFO file from a PKGBUILD in the local working directory and commits changes in both on top of a dedicated branch found in the git repository it is run from within. If this branch does not exist, it will be created.
 
 All this is done without altering the state of the repository or its working tree and thus save to run in dirty worktrees.
 
@@ -33,6 +33,11 @@ All this is done without altering the state of the repository or its working tre
     Choosing an alternate string to tell apart the real file path from the name it is added to the distribution branch allows specifying file names that contain a colon.
 
     This option is not restricted to a single character, whole strings are also valid separators. If you intend to include weird symbols here, be aware that they are used for prefix and suffix removal using bash parameter expansion and make yourself familiar with the according section in the bash(1) manual page.
+
+  - `-b` _branch_:
+    Specify the branch to commit to.
+
+    By default, this branch is named by the pkgbase variable as denoted by the PKGBUILD, whose name is potentially changed by the `-p` option, prefixed with "aur/".
 
 All other arguments are treated as further files to include when composing the branch.
 
