@@ -102,12 +102,18 @@ fi
 # Edit commit message.
 eval $(git var GIT_EDITOR) "$message"
 
-# Clean everything below snip line.
-sed -i "/$snip/,\$d" "$message"
+# Clean everything below snip line, comments and whitespace.
+clean="$tmpdir/COMMIT_MSG"
+sed "/$snip/,\$d" "$message" | git stripspace -s > "$clean"
+
+# Reject empty messages.
+if [ ! -s "$clean" ]; then
+  gettext $'Aborting commit due to empty commit message.\n'
+  exit
+fi
 
 
 # Commit.
 git update-ref "$branch" $(\
-  git stripspace -c < "$message" | \
   git commit-tree $(git write-tree) \
-  -F - "${parent[@]}" )
+  -F "$clean" "${parent[@]}" )
