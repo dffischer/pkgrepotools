@@ -44,7 +44,7 @@ for file
 do
   if [ "$file" != "$pkgbuild" -a "${file##*/}" != PKGBUILD ]
   then
-    add "$file"
+    add "${file%:*}" "${file##*:}"
   fi
 done
 
@@ -80,7 +80,7 @@ diffinfo() {
 }
 
 message="$tmpdir/COMMIT_EDITMSG"
-( git log -1 --format=%B -- "$pkgbuild" "$@"
+( git log -1 --format=%B -- "$pkgbuild" "${@%:*}"
   snipline | git stripspace -c
   diffinfo "$branch"
 ) > "$message"
