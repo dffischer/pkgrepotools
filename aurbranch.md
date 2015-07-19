@@ -27,6 +27,13 @@ All this is done without altering the state of the repository or its working tre
 
     If a file named PKGBUILD is also specified as additional file, it will be ignored in favor of this file. However, it will still be considered when changed files are searched to propose a commit message.
 
+  - `-s` _separator_:
+    Change the separator for renaming.
+
+    Choosing an alternate string to tell apart the real file path from the name it is added to the distribution branch allows specifying file names that contain a colon.
+
+    This option is not restricted to a single character, whole strings are also valid separators. If you intend to include weird symbols here, be aware that they are used for prefix and suffix removal using bash parameter expansion and make yourself familiar with the according section in the bash(1) manual page.
+
 All other arguments are treated as further files to include when composing the branch.
 
 The message of the last commit affecting any of these files, viewed from the current HEAD downwards, will be proposed as the description of the commit to be newly generated on the distribution branch. If any of these files are not under version control or unknown to the current branch, they will be silently ignored.

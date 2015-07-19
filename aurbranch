@@ -4,16 +4,18 @@
 export TEXTDOMAIN='git'
 
 # Parse arguments.
-while getopts 'hp:' argument
+while getopts 'hp:s:' argument
 do
   case $argument in
     h)
       echo "usage: $0 [options] <additional files>"
       echo 'Commit changes in the PKGBUILD to an AUR distribution branch.'
-      echo ' -h           show this help text'
-      echo ' -p <script>  file to use in place of PKGBUILD'
+      echo ' -h              show this help text'
+      echo ' -p <script>     file to use in place of PKGBUILD'
+      echo ' -s <separator>  separator between real file name and path in repository'
       exit ;;
     p) pkgbuild="$OPTARG" ;;
+    s) separator="$OPTARG" ;;
     \?) exit 1 ;;
   esac
 done
@@ -44,7 +46,7 @@ for file
 do
   if [ "$file" != "$pkgbuild" -a "${file##*/}" != PKGBUILD ]
   then
-    add "${file%:*}" "${file##*:}"
+    add "${file%${separator:=:}*}" "${file##*${separator:=:}}"
   fi
 done
 
@@ -80,7 +82,7 @@ diffinfo() {
 }
 
 message="$tmpdir/COMMIT_EDITMSG"
-( git log -1 --format=%B -- "$pkgbuild" "${@%:*}"
+( git log -1 --format=%B -- "$pkgbuild" "${@%${separator}*}"
   snipline | git stripspace -c
   diffinfo "$branch"
 ) > "$message"
