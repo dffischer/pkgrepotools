@@ -60,6 +60,14 @@ snip="------------------------ >8 ------------------------"
 
 # Output a $snip line, properly explained and commented.
 snipline() {
+  printf "$(gettext $(
+    # Enclosing them in command substitutions is a weird
+    # but compact way to ignore newlines as well as indents.
+    )$'Please enter the commit message for your changes. Lines starting\n'$(
+    )$'with \'%c\' will be ignored, and an empty message aborts the commit.\n')\n" \
+    "$(echo | git stripspace -c)"
+    # Passing an empty line through stripspace generates the comment character,
+    # followed by a space. Command substiution will strip the latter.
   echo "$snip"
   gettext $'Do not touch the line above.\nEverything below will be removed.'
 }
@@ -100,5 +108,6 @@ sed -i "/$snip/,\$d" "$message"
 
 # Commit.
 git update-ref "$branch" $(\
+  git stripspace -c < "$message" | \
   git commit-tree $(git write-tree) \
-  -F "$message" "${parent[@]}" )
+  -F - "${parent[@]}" )
