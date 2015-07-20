@@ -61,8 +61,9 @@ It does so by expanding the templates in a temporary file besides the original w
 
     If any execution yields an exit code other than 0, makepkg-expanded will abort instantly with the same exit code.
 
-    The default command invokes makepkg(1) on the expanded PKGBUILD and then uses cp-pkgver(1) to propagate any version updated back to the original if the former completed successfully. This would be roughly equal to passing 'makepkg -p $1; cp-pkgver $1 $2' with this option. To pass additional options, alter this expression to your liking. For example, passing 'aurbranch -p $1' here instead would instead prepare for distribution.
+    If this option is given multiple times, all the given commands will be run on all expansion results in the sequence they were specified.
 
+    The default command invokes makepkg(1) on the expanded PKGBUILD and then uses cp-pkgver(1) to propagate any version updated back to the original if the former completed successfully. This would be roughly equal to passing 'makepkg -p $1' and 'cp-pkgver $1 $2' with this option. To pass additional options, alter this expression to your liking. For example, passing 'aurbranch -p $1' here instead would instead prepare for distribution.
 
 
 ## EXIT STATUS

@@ -58,7 +58,7 @@ do
           sed '/# vim/d;x;$G;/# template/d;1d'
         }
       fi ;;
-    r) process="$OPTARG" ;;
+    r) process+=("$OPTARG") ;;
     \?) invalid_option ;;
     :)
       case "$OPTARG" in
@@ -80,10 +80,13 @@ then
   fi
 fi
 
-: ${process:='
-  makepkg -p "$1" || exit $?
-  exec cp-pkgver "$1" "$2"
-'}
+if [ ${#process[@]} -eq 0 ]
+then
+  process=(
+    'exec makepkg -p "$1"'
+    'exec cp-pkgver "$1" "$2"'
+  )
+fi
 
 
 # process PKGBUILDs
@@ -105,7 +108,10 @@ do
       [ ${PIPESTATUS[0]} -ne 0 ] && exit ${PIPESTATUS[0]}
 
       # process
-      bash -c "$process" process-expanded "$expanded" "$file" || exit $?
+      for run in "${process[@]}"
+      do
+        bash -c "$run" process-expanded "$expanded" "$file" || exit $?
+      done
     ) || exit $? #)
   fi
 done
