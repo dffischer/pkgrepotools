@@ -110,7 +110,8 @@ do
       # process
       for run in "${process[@]}"
       do
-        bash -c "$run" process-expanded "$expanded" "$file" || exit $?
+        echo "GLOBIGNORE='.*:$expanded:$file'" | BASH_ENV=/dev/stdin bash -c \
+          "$run" process-expanded "$expanded" "$file" || exit $?
       done
     ) || exit $? #)
   fi
