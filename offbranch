@@ -1,0 +1,105 @@
+#!/bin/bash
+
+# initialize gettext
+export TEXTDOMAIN='git'
+
+# Parse arguments.
+while getopts 'hs:b:' argument
+do
+  case $argument in
+    h)
+      echo "usage: $0 [options] <files>"
+      echo 'Commit files on top of a branch not checked out.'
+      echo ' -h              show this help text'
+      echo ' -s <separator>  separator between real file name and path in repository'
+      echo ' -b <branch>     branch to commit to'
+      exit ;;
+    s) separator="$OPTARG" ;;
+    b) branch="refs/heads/$OPTARG" ;;
+    \?) exit 1 ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+
+# Compose resources in a temporary directory.
+tmpdir="$(mktemp -d --tmpdir offbranch.XXXXXXXXXX)"
+trap "rm -r '$tmpdir'" EXIT
+
+export GIT_INDEX_FILE="$tmpdir/index"
+
+
+# Compose new revision.
+for argument
+do
+  filename="${argument%${separator:=:}*}"
+  addpath="${argument##*$separator}"
+  git update-index --add --cacheinfo $(
+    stat -c '%a' "$filename"),$(
+    git hash-object --path "${addpath:-$filename}" -w "$filename"
+    ),"${addpath:-$filename}"
+done
+
+
+# Propose commit message, if necessary.
+
+# This separator tells a commit message apart from unprefixed comments.
+# It is taken from git commit -v.
+snip="------------------------ >8 ------------------------"
+
+# Output a $snip line, properly explained and commented.
+snipline() {
+  printf "$(gettext $(
+    # Enclosing them in command substitutions is a weird
+    # but compact way to ignore newlines as well as indents.
+    )$'Please enter the commit message for your changes. Lines starting\n'$(
+    )$'with \'%c\' will be ignored, and an empty message aborts the commit.\n')\n" \
+    "$(echo | git stripspace -c)"
+    # Passing an empty line through stripspace generates the comment character,
+    # followed by a space. Command substiution will strip the latter.
+  echo "$snip"
+  gettext $'Do not touch the line above.\nEverything below will be removed.'
+}
+
+# Find how the given <tree-ish> differs from the index.
+# If no argument is given, the constant empty tree is assumed.
+diffinfo() {
+  git diff-index -p --stat --cached --no-color --exit-code \
+    "${1:-4b825dc642cb6eb9a060e54bf8d69288fbee4904}" 2> /dev/null
+}
+
+message="$tmpdir/COMMIT_EDITMSG"
+{ git log -1 --format=%B -- "${@%${separator}*}" | head -c -1
+  echo
+  snipline | git stripspace -c
+  diffinfo "${branch:=refs/heads/offbranch}"
+} > "$message"
+case $? in
+  0) # Nothing changed, nothing to commit.
+    exit ;;
+  1) # Changes to commit
+    parent=(-p "$branch")
+    ;;
+  128) # Branch does not yet exist.
+    diffinfo >> "$message"
+    ;;
+esac
+
+# Edit commit message.
+eval $(git var GIT_EDITOR) "$message"
+
+# Clean everything below snip line, comments and whitespace.
+clean="$tmpdir/COMMIT_MSG"
+sed "/$snip/,\$d" "$message" | git stripspace -s > "$clean"
+
+# Reject empty messages.
+if [ ! -s "$clean" ]; then
+  gettext $'Aborting commit due to empty commit message.\n'
+  exit
+fi
+
+
+# Commit.
+git update-ref "$branch" $(\
+  git commit-tree $(git write-tree) \
+  -F "$clean" "${parent[@]}" )
