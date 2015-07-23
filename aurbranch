@@ -83,7 +83,8 @@ diffinfo() {
 }
 
 message="$tmpdir/COMMIT_EDITMSG"
-{ git log -1 --format=%B -- "$pkgbuild" "${@%${separator}*}"
+{ git log -1 --format=%B -- "${@%${separator}*}" | head -c -1
+  echo
   snipline | git stripspace -c
   diffinfo "${branch:="refs/heads/aur/$(grep -Po '(?<=pkgbase = ).*' "$srcinfo")"}"
 } > "$message"
