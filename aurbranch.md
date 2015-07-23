@@ -27,6 +27,8 @@ It uses offbranch(1) to compose a new revision from PKGBUILD, .SRCINFO and given
 
 All file names are directly passed to offbranch(1), accompanied by the PKGBUILD and .SRCINFO.
 
+If a .SRCINFO file is present as an argument, aurbranch will use it directly. If it is not explicitly specified, a .SRCINFO will be generated from the PKGBUILD and overwrite a possibly present file of the same name in the current working directory.
+
 
 ## BUGS
 

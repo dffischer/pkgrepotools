@@ -16,10 +16,13 @@ do
 done
 shift $(($OPTIND - 1))
 
-# Generate .SRCINFO
-mksrcinfo "${pkgbuild:=PKGBUILD}"
+# Generate missing .SRCINFO.
+if ! [[ " $@ " =~ " .SRCINFO " ]]
+then
+  mksrcinfo ${pkgbuild:+"$pkgbuild"}
+fi
 
 # Update the branch denoted by the pkgbase.
 exec offbranch \
   -b "aur/$(grep -Po "(?<=pkgbase = ).*" .SRCINFO)" \
-  "$pkgbuild:PKGBUILD" .SRCINFO "$@"
+  "${pkgbuild:-PKGBUILD}:PKGBUILD" .SRCINFO "$@"
