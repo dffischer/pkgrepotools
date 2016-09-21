@@ -1,23 +1,25 @@
 #!/bin/bash
 
 # Parse arguments.
-while getopts 'hp:' argument
+while getopts 'hp:s:' argument
 do
   case $argument in
     h)
       echo "usage: $0 [options] <additional files>"
       echo 'Commit changes in the PKGBUILD to an AUR distribution branch.'
-      echo ' -h           show this help text'
-      echo ' -p <script>  file to use in place of PKGBUILD'
+      echo ' -h              show this help text'
+      echo ' -p <script>     file to use in place of PKGBUILD'
+      echo ' -s <separator>  separator between real file name and path in repository'
       exit ;;
     p) pkgbuild="$OPTARG" ;;
+    s) separator="$OPTARG" ;;
     \?) exit 1 ;;
   esac
 done
 shift $(($OPTIND - 1))
 
 # Generate missing .SRCINFO.
-if ! [[ " $@ " =~ " .SRCINFO " ]]
+if ! [[ " ${@##*${separator:-:}} " =~ " .SRCINFO " ]]
 then
   mksrcinfo ${pkgbuild:+"$pkgbuild"}
 fi
@@ -25,4 +27,5 @@ fi
 # Update the branch denoted by the pkgbase.
 exec offbranch \
   -b "aur/$(grep -Po "(?<=pkgbase = ).*" .SRCINFO)" \
-  "${pkgbuild:-PKGBUILD}:PKGBUILD" .SRCINFO "$@"
+  ${separator+-s} ${separator+"$separator"} \
+  "${pkgbuild:-PKGBUILD}${separator:-:}PKGBUILD" .SRCINFO "$@"
