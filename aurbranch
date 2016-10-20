@@ -24,8 +24,15 @@ then
   mksrcinfo ${pkgbuild:+"$pkgbuild"}
 fi
 
-# Update the branch denoted by the pkgbase.
+# Determine branch name.
+branch=aur
+if [ -n "$(git rev-parse --show-prefix)" ]
+then
+  branch+="/$(grep -Po "(?<=pkgbase = ).*" .SRCINFO)"
+fi
+
+# Update the branch.
 exec offbranch \
-  -b "aur/$(grep -Po "(?<=pkgbase = ).*" .SRCINFO)" \
+  -b "$branch" \
   ${separator+-s} ${separator+"$separator"} \
   "${pkgbuild:-PKGBUILD}${separator:-:}PKGBUILD" .SRCINFO "$@"

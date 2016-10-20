@@ -10,7 +10,9 @@ aurbranch(1) -- maintain a git branch for AUR distibution
 
 This program helps to create and update a branch in a local git repository to be pushed to the Arch User Repository.
 
-It uses offbranch(1) to compose a new revision from PKGBUILD, .SRCINFO and given additional files which will be placed on top of a branch named by the pkgbase variable as denoted by the PKGBUILD, prefixed with _aur/_.
+It uses offbranch(1) to compose a new revision from PKGBUILD, .SRCINFO and given additional files which will be placed on top of a dedicated distribution branch.
+
+If the program is executed in the root of a git repository, the branch will be called _aur_. If it is instead run from a directory deeper within a repository, a PKGBUILD collection repository is assumed and the branch will be named by the pkgbase variable as denoted by the PKGBUILD, prefixed with _aur/_. This way, all distribution branches are recognizable by a common naming scheme.
 
 
 ## OPTIONS
@@ -42,4 +44,4 @@ This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http:
 
 ## SEE ALSO
 
-offbranch(1), mksrcinfo.
+offbranch(1), mksrcinfo, git(1).
