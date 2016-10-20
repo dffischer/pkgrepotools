@@ -32,7 +32,12 @@ All other arguments are treated as further files to include when composing the b
 
 The message of the last commit affecting any of these files, viewed from the current HEAD downwards, will be proposed as the description of the commit to be newly generated on the distribution branch. If any of these files are not under version control or unknown to the current branch, they will be silently ignored.
 
+
+### Renaming Files
+
 It is possible to add files under a different name with the syntax _path:name_. If any argument contains a colon, the part before it is considered as the name of the file to include with the name taken from the part after the colon. This new name may also be a full path, simulating subdirectories in the distribution branch. If the path contains multiple colons, only the first one is used for separation. All further ones are considered part of the new name.
+
+If no name is given, but the path ends with the separator, the file is not included, but considered when looking for a commit message to propose. This can be used when a file is generated from other files under version control, but not tracked itself. The files used to generate can then be passed like this to exclude them from the branch but use them to explain changes in the generated result. In contrast to files to actually check in, directories are valid in this case, too.
 
 
 ## BUGS

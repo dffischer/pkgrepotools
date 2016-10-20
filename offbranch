@@ -32,12 +32,15 @@ export GIT_INDEX_FILE="$tmpdir/index"
 # Compose new revision.
 for argument
 do
-  filename="${argument%${separator:=:}*}"
-  addpath="${argument##*$separator}"
-  git update-index --add --cacheinfo $(
-    stat -c '%a' "$filename"),$(
-    git hash-object --path "${addpath:-$filename}" -w "$filename"
-    ),"${addpath:-$filename}"
+  addpath="${argument##*${separator:=:}}"
+  if [ -n "$addpath" ]
+  then
+    filename="${argument%$separator*}"
+    git update-index --add --cacheinfo $(
+      stat -c '%a' "$filename"),$(
+      git hash-object --path "$addpath" -w "$filename"
+      ),"$addpath"
+  fi
 done
 
 
