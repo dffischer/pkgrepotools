@@ -39,8 +39,12 @@ It is possible to add files under a different name with the syntax _path:name_. 
 
 If no name is given, but the path ends with the separator, the file is not included, but considered when looking for a commit message to propose. This can be used when a file is generated from other files under version control, but not tracked itself. The files used to generate can then be passed like this to exclude them from the branch but use them to explain changes in the generated result. In contrast to files to actually check in, directories are valid in this case, too.
 
+When looking for a commit message, files not tracked by the current git repository are silently ignored.
+
 
 ## BUGS
+
+Files residing in repositories other than the one including the current working directory are not scanned for commit messages to propose. This could be useful for example when branch contents are to be composed from data scattered across multiple repositories or utilizes templates from elsewhere. To implement this, simply calling git log to find the last relevant message is not enough any more. The files would have to be assorted by repository, then the last message would have to be collected from all of them, each including a timestamp to sort them by, so that the most recent one can be used.
 
 This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http://github.com/dffischer/makepkg-expanded). Bugs can be filed in [the tracker found there](http://github.com/dffischer/makepkg-expanded/issues).
 

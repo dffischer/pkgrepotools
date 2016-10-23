@@ -33,13 +33,17 @@ export GIT_INDEX_FILE="$tmpdir/index"
 for argument
 do
   addpath="${argument##*${separator:=:}}"
+  filename="${argument%$separator*}"
   if [ -n "$addpath" ]
   then
-    filename="${argument%$separator*}"
     git update-index --add --cacheinfo $(
       stat -c '%a' "$filename"),$(
       git hash-object --path "$addpath" -w "$filename"
       ),"$addpath"
+  fi
+  if [[ "$(realpath -s "$filename")" =~ ^"$(git rev-parse --show-toplevel)" ]]
+  then
+    messages+=("$filename")
   fi
 done
 
@@ -72,7 +76,7 @@ diffinfo() {
 }
 
 message="$tmpdir/COMMIT_EDITMSG"
-{ git log -1 --format=%B -- "${@%${separator}*}" | head -c -1
+{ git log -1 --format=%B -- "${messages[@]}" | head -c -1
   echo
   snipline | git stripspace -c
   diffinfo "${branch:=refs/heads/offbranch}"
