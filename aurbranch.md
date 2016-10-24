@@ -32,7 +32,7 @@ If the program is executed in the root of a git repository, the branch will be c
 
     This option is passed through unaltered to offbranch(1).
 
-All file names are directly passed to offbranch(1), accompanied by the PKGBUILD and .SRCINFO.
+All file names are directly passed to offbranch(1), accompanied by the PKGBUILD and .SRCINFO. This provides the full range of features such as renaming files and specifying paths to search for a commit message. For more details, see the offbranch(1) manual page, especially the section about "Renaming Files".
 
 If a .SRCINFO file is present as an argument, aurbranch will use it directly. If it is not explicitly specified, a .SRCINFO will be generated from the PKGBUILD and overwrite a possibly present file of the same name in the current working directory.
 
