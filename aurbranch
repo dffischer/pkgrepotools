@@ -19,7 +19,7 @@ done
 shift $(($OPTIND - 1))
 
 # Generate missing .SRCINFO.
-if ! [[ " ${@##*${separator:-:}} " =~ " .SRCINFO " ]]
+if ! [[ " ${@##*${separator:=:}} " =~ " .SRCINFO " ]]
 then
   mksrcinfo ${pkgbuild:+"$pkgbuild"}
 fi
@@ -31,8 +31,20 @@ then
   branch+="/$(grep -Po "(?<=pkgbase = ).*" .SRCINFO)"
 fi
 
+# Resolve symbolic links.
+for argument
+do
+  filename="${argument%${separator}*}"
+  if [ -h "$filename" ]
+  then
+    pass+=("$(readlink "$filename")$separator${argument##*$separator}")
+  else
+    pass+=("$argument")
+  fi
+done
+
 # Update the branch.
 exec offbranch \
   -b "$branch" \
   ${separator+-s} ${separator+"$separator"} \
-  "${pkgbuild:-PKGBUILD}${separator:-:}PKGBUILD" .SRCINFO "$@"
+  "${pkgbuild:-PKGBUILD}${separator:-:}PKGBUILD" .SRCINFO "${pass[@]}"
