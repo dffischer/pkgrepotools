@@ -3,6 +3,13 @@
 # initialize gettext
 export TEXTDOMAIN='git'
 
+# Refuse to run outside any repository.
+if ! git rev-parse 2> /dev/null
+then
+  gettext -s "Not a git repository" >&2
+  exit 2
+fi
+
 # Parse arguments.
 while getopts 'hs:b:' argument
 do

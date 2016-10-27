@@ -26,7 +26,7 @@ fi
 
 # Determine branch name.
 branch=aur
-if [ -n "$(git rev-parse --show-prefix)" ]
+if [ -n "$(git rev-parse --show-prefix 2> /dev/null)" ]
 then
   branch+="/$(grep -Po "(?<=pkgbase = ).*" .SRCINFO)"
 fi
