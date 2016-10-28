@@ -42,6 +42,23 @@ If no name is given, but the path ends with the separator, the file is not inclu
 When looking for a commit message, files not tracked by the current git repository are silently ignored.
 
 
+## EXIT STATUS
+
+Exit code 0 mimics the behaviour of the git commit command. It will be returned when user requested action was taken, that is
+
+  - a commit was successfully created from the given file and commit message,
+
+  - a branch was created by its first commit,
+
+  - the user aborted the process through an empty commit message and also
+
+  - when no commit was necessary to begin with because nothing changed.
+
+When offbranch is called with invalid parameters, it will exit with status 1.
+
+Running it outside of a git repository will lead to exit code 2.
+
+
 ## BUGS
 
 Files residing in repositories other than the one including the current working directory are not scanned for commit messages to propose. This could be useful for example when branch contents are to be composed from data scattered across multiple repositories or utilizes templates from elsewhere. To implement this, simply calling git log to find the last relevant message is not enough any more. The files would have to be assorted by repository, then the last message would have to be collected from all of them, each including a timestamp to sort them by, so that the most recent one can be used.

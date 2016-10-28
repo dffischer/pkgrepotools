@@ -39,6 +39,11 @@ All symbolic links that appear in the arguments are resolved and replaced with t
 If a .SRCINFO file is present as an argument, aurbranch will use it directly. If it is not explicitly specified, a .SRCINFO will be generated from the PKGBUILD and overwrite a possibly present file of the same name in the current working directory.
 
 
+## EXIT STATUS
+
+Exit codes are passed through unaltered from offbranch(1). The its manual page for a more detailed description of their meaning.
+
+
 ## BUGS
 
 This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http://github.com/dffischer/makepkg-expanded). Bugs can be filed in [the tracker found there](http://github.com/dffischer/makepkg-expanded/issues).
