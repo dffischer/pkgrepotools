@@ -41,6 +41,11 @@ for argument
 do
   addpath="${argument##*${separator:=:}}"
   filename="${argument%$separator*}"
+  if [ ! -r "$filename" ]
+  then
+    printf "$(gettext "pathspec '%s' did not match any files")\n" "$filename" >&2
+    exit 1
+  fi
   if [ -n "$addpath" ]
   then
     git update-index --add --cacheinfo $(
