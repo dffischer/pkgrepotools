@@ -11,7 +11,7 @@ then
 fi
 
 # Parse arguments.
-while getopts 'hs:b:' argument
+while getopts 'hs:b:q' argument
 do
   case $argument in
     h)
@@ -20,9 +20,11 @@ do
       echo ' -h              show this help text'
       echo ' -s <separator>  separator between real file name and path in repository'
       echo ' -b <branch>     branch to commit to'
+      echo ' -q              be quiet and speak through exit codes'
       exit ;;
     s) separator="$OPTARG" ;;
     b) branch="refs/heads/$OPTARG" ;;
+    q) quiet=true ;;
     \?) exit 1 ;;
   esac
 done
@@ -95,12 +97,13 @@ message="$tmpdir/COMMIT_EDITMSG"
 } > "$message"
 case $? in
   0) # Nothing changed, nothing to commit.
-    exit ;;
+    exit 253 ;;
   1) # Changes to commit
     parent=(-p "$branch")
     ;;
   128) # Branch does not yet exist.
     diffinfo >> "$message"
+    operation=created
     ;;
 esac
 
@@ -112,9 +115,15 @@ clean="$tmpdir/COMMIT_MSG"
 sed "/$snip/,\$d" "$message" | git stripspace -s > "$clean"
 
 # Reject empty messages.
-if [ ! -s "$clean" ]; then
-  gettext $'Aborting commit due to empty commit message.\n'
-  exit
+if [ ! -s "$clean" ]
+then
+  if ${quiet:-false}
+  then
+    exit 255
+  else
+    gettext $'Aborting commit due to empty commit message.\n'
+    exit
+  fi
 fi
 
 
@@ -122,3 +131,10 @@ fi
 git update-ref "$branch" $(\
   git commit-tree $(git write-tree) \
   -F "$clean" "${parent[@]}" )
+
+if ${quiet:-false}
+then
+  exit ${operation+254}
+else
+  echo "${operation:-updated} branch $branch"
+fi

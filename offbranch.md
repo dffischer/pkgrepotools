@@ -28,6 +28,13 @@ All this is done without altering the state of the repository or its working tre
   - `-b` _branch_:
     Specify the branch to commit to, instead of _offbranch_. If this branch does not exist yet, it will be created.
 
+  - `-q`:
+    Be quiet.
+
+    This suppresses all messages offbranch would issue to the standard output. It also alters the exit code in case of successful completion to make the result suitable to be parsed by scripts. See the section EXIT STATUS for more details.
+
+    Error messages are still shown.
+
 All other arguments are treated as further files to include when composing the branch.
 
 The message of the last commit affecting any of these files, viewed from the current HEAD downwards, will be proposed as the description of the commit to be newly generated on the distribution branch. If any of these files are not under version control or unknown to the current branch, they will be silently ignored.
@@ -44,15 +51,15 @@ When looking for a commit message, files not tracked by the current git reposito
 
 ## EXIT STATUS
 
-Exit code 0 mimics the behaviour of the git commit command. It will be returned when user requested action was taken, that is
+Exit code 0 mimics the behaviour of the git commit command, when run without the -q switch. In quiet mode, the numbers in braces will be returned on the respective events, when
 
-  - a commit was successfully created from the given file and commit message,
+  - a commit was successfully created from the given file and commit message (0),
 
-  - a branch was created by its first commit,
+  - a branch was created by its first commit (254),
 
-  - the user aborted the process through an empty commit message and also
+  - the user aborted the process through an empty commit message (255) and also
 
-  - when no commit was necessary to begin with because nothing changed.
+  - when no commit was necessary to begin with because nothing changed (253).
 
 When offbranch is called with invalid parameters, it will exit with status 1.
 
