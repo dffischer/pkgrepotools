@@ -55,15 +55,17 @@ Exit code 0 mimics the behaviour of the git commit command, when run without the
 
   - a commit was successfully created from the given file and commit message (0),
 
-  - a branch was created by its first commit (254),
+  - a branch was created by its first commit (2),
 
-  - the user aborted the process through an empty commit message (255) and also
+  - the user aborted the process through an empty commit message (1) and also
 
-  - when no commit was necessary to begin with because nothing changed (253).
+  - when no commit was necessary to begin with because nothing changed (3).
 
-When offbranch is called with invalid parameters, it will exit with status 1.
+Exit codes higher than 7 are not changed by the -q flag and indicate errors in program invocation.
 
-Running it outside of a git repository will lead to exit code 2.
+  - When offbranch is called with invalid parameters, including nonexistent options or missing files, it will exit with status 8.
+
+  - Running it outside of a git repository will lead to exit code 9.
 
 
 ## BUGS

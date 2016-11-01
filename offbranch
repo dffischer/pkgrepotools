@@ -7,7 +7,7 @@ export TEXTDOMAIN='git'
 if ! git rev-parse 2> /dev/null
 then
   gettext -s "Not a git repository" >&2
-  exit 2
+  exit 9
 fi
 
 # Parse arguments.
@@ -25,7 +25,7 @@ do
     s) separator="$OPTARG" ;;
     b) branch="refs/heads/$OPTARG" ;;
     q) quiet=true ;;
-    \?) exit 1 ;;
+    \?) exit 8 ;;
   esac
 done
 shift $(($OPTIND - 1))
@@ -46,7 +46,7 @@ do
   if [ ! -r "$filename" ]
   then
     printf "$(gettext "pathspec '%s' did not match any files")\n" "$filename" >&2
-    exit 1
+    exit 8
   fi
   if [ -n "$addpath" ]
   then
@@ -97,7 +97,7 @@ message="$tmpdir/COMMIT_EDITMSG"
 } > "$message"
 case $? in
   0) # Nothing changed, nothing to commit.
-    exit 253 ;;
+    exit 3 ;;
   1) # Changes to commit
     parent=(-p "$branch")
     ;;
@@ -119,7 +119,7 @@ if [ ! -s "$clean" ]
 then
   if ${quiet:-false}
   then
-    exit 255
+    exit 1
   else
     gettext $'Aborting commit due to empty commit message.\n'
     exit
@@ -134,7 +134,7 @@ git update-ref "$branch" $(\
 
 if ${quiet:-false}
 then
-  exit ${operation+254}
+  exit ${operation+2}
 else
   echo "${operation:-updated} branch $branch"
 fi
