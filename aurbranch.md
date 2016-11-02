@@ -12,8 +12,6 @@ This program helps to create and update a branch in a local git repository to be
 
 It uses offbranch(1) to compose a new revision from PKGBUILD, .SRCINFO and given additional files which will be placed on top of a dedicated distribution branch.
 
-If the program is executed in the root of a git repository, the branch will be called _aur_. If it is instead run from a directory deeper within a repository, a PKGBUILD collection repository is assumed and the branch will be named by the pkgbase variable as denoted by the PKGBUILD, prefixed with _aur/_. This way, all distribution branches are recognizable by a common naming scheme.
-
 
 ## OPTIONS
 
@@ -39,9 +37,18 @@ All symbolic links that appear in the arguments are resolved and replaced with t
 If a .SRCINFO file is present as an argument, aurbranch will use it directly. If it is not explicitly specified, a .SRCINFO will be generated from the PKGBUILD and overwrite a possibly present file of the same name in the current working directory.
 
 
+## BRANCH SETUP
+
+If the program is executed in the root of a git repository, the branch will be called _aur_. If it is instead run from a directory deeper within a repository, a PKGBUILD collection repository is assumed and the branch will be named by the pkgbase variable as denoted by the PKGBUILD, prefixed with _aur/_. This way, all distribution branches are recognizable by a common naming scheme.
+
+If the branch does not yet exist, a remote will be set up in addition to its creation. The branch is configured to track the _master_ of the respective package repository. Be wary of using the --all option to git push ever afterwards, because this pushes all branches to the specified remote, or origin, disregarding any of this configuration.
+
+
 ## EXIT STATUS
 
-Exit codes are passed through unaltered from offbranch(1). The its manual page for a more detailed description of their meaning.
+When offbranch(1) completed successfully, aurbranch will return with code 0. Note that this is also the case when the commit was purposely aborted by an empty commit message or the editor did not even come up because no changes were introduced.
+
+Any remaining error is indicated by an exit code of 1 or greater. This mostly happens when something is wrong with the arguments.
 
 
 ## BUGS

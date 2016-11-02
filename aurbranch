@@ -25,10 +25,11 @@ then
 fi
 
 # Determine branch name.
+readonly pkgbase="$(grep -Po "(?<=pkgbase = ).*" .SRCINFO)"
 branch=aur
 if [ -n "$(git rev-parse --show-prefix 2> /dev/null)" ]
 then
-  branch+="/$(grep -Po "(?<=pkgbase = ).*" .SRCINFO)"
+  branch+="/$pkgbase"
 fi
 
 # Resolve symbolic links.
@@ -44,7 +45,22 @@ do
 done
 
 # Update the branch.
-exec offbranch \
-  -b "$branch" \
+offbranch \
+  -qb "$branch" \
   ${separator+-s} ${separator+"$separator"} \
   "${pkgbuild:-PKGBUILD}${separator:-:}PKGBUILD" .SRCINFO "${pass[@]}"
+
+case $? in
+  2) # Branch created, configure it.
+    readonly master='refs/heads/master'
+    git config "remote.${pkgbase}.url" "ssh://aur@aur4.archlinux.org/${pkgbase}.git"
+    git config "remote.${pkgbase}.fetch" "$master:refs/remotes/$branch"
+    git config "remote.${pkgbase}.push" "refs/heads/$branch:$master"
+    git config "branch.${branch}.remote" "$pkgbase"
+    git config "branch.${branch}.merge" "$master"
+    ;;
+  [0-7]) # Success, no action necessary.
+    ;;
+  *) # Propagate errors.
+    exit 1 ;;
+esac
