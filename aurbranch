@@ -50,17 +50,9 @@ offbranch \
   ${separator+-s} ${separator+"$separator"} \
   "${pkgbuild:-PKGBUILD}${separator:-:}PKGBUILD" .SRCINFO "${pass[@]}"
 
+# Create branch, if needed, and propagate errors.
 case $? in
-  2) # Branch created, configure it.
-    readonly master='refs/heads/master'
-    git config "remote.${pkgbase}.url" "ssh://aur@aur4.archlinux.org/${pkgbase}.git"
-    git config "remote.${pkgbase}.fetch" "$master:refs/remotes/$branch"
-    git config "remote.${pkgbase}.push" "refs/heads/$branch:$master"
-    git config "branch.${branch}.remote" "$pkgbase"
-    git config "branch.${branch}.merge" "$master"
-    ;;
-  [0-7]) # Success, no action necessary.
-    ;;
-  *) # Propagate errors.
-    exit 1 ;;
+  2) aurremote "$pkgbase" "$branch" ;;
+  [0-7]) ;;
+  *) exit 1 ;;
 esac

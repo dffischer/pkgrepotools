@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Parse arguments.
+print_help() {
+  echo "usage: $0 <package> [branch]"
+  echo "       $0 -h"
+  echo 'Set up git remote and branch pointing to AUR package repository.'
+  exit 1
+}
+
+case $# in
+  0) print_help ;;
+  1) [ "$1" == -h ] && print_help ;;
+  2) ;;
+  *)
+    gettext -sd git "Too many arguments."
+    exit 1 ;;
+esac
+
+readonly master="refs/heads/master"
+readonly branch="${2:-aur/$1}"
+
+
+# Set up remote.
+git remote add -t master "$1" "ssh://aur@aur4.archlinux.org/${1}.git"
+
+# Restrict parameterless pushes to the branch.
+git config "remote.${1}.push" "refs/heads/$branch:$master"
+
+# Make branch track remote master.
+git config "branch.${branch}.remote" "$1"
+git config "branch.${branch}.merge" "$master"
