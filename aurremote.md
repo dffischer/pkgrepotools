@@ -14,6 +14,8 @@ In the Git repository it was run from within, it will configure a remote pointin
 
 The branch name defaults to _aur/package name_ when not specified.
 
+If the local branch does not yet exist, aurremote acts to adopt an existing package. The history will immedialty be pulled to the local branch. If a local branch already is present, it is assumed that the package was not yet created and pulling from there would thus lead to an error. You may fetch the remote manually afterwards. It has the exact same name as the package.
+
 
 ## BUGS
 
