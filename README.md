@@ -15,6 +15,8 @@ Many functionalities are also available as separate tools and can easy life deal
 - [aurremote](aurremote.md) helps to prepare these branches for AUR upload. It is normally invoked automatically by _aurbranch_ when it creates a new distribution branch, but can be useful on its own when adoption packages.
 - [offbranch](offbranch.md) is a tool to allow commits to a git branch without checking it out. It is completely agnostic of any AUR or pacman related specialities.
 
+You can learn about how to use all of these in concert with [this tutorial](tutorial.md).
+
 
 ## Installation
 
