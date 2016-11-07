@@ -22,7 +22,7 @@ Only the _PKGBUILD_ is relevant for distribution to the AUR. A _.SRCINFO_ is als
 
 ```bash
 > aurbranch
-created branch refs/heads/aur
+creating refs/heads/aur
 ```
 
 It will then ask for a commit message, generate the _.SRCINFO_ from the _PKGBUILD_ and commits them as the first revision of a branch named _aur_. As this branch did not previously exist, it also sets up a remote named exactly like the package (_examplepackage_ in this case) and configure the branch to track the master branch of this remote. So consequently, uploading can be invoked with

@@ -46,7 +46,7 @@ done
 
 # Update the branch.
 offbranch \
-  -qb "$branch" \
+  -b "$branch" \
   ${separator+-s} ${separator+"$separator"} \
   "${pkgbuild:-PKGBUILD}${separator:-:}PKGBUILD" .SRCINFO "${pass[@]}"
 
