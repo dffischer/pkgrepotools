@@ -17,6 +17,7 @@ makedepends=('ruby-ronn')
 find_executables() {
   cd $_gitname
   executables=($(find -mindepth 1 -maxdepth 1 -executable -type f))
+  executables=("${executables[@]#./}")
 }
 
 build() {
@@ -26,6 +27,10 @@ build() {
 
 package() {
   find_executables
+
   install -Dt "$pkgdir/usr/bin" ${executables[@]}
   install -Dm644 -t "$pkgdir/usr/share/man/man1" *.1
+
+  IFS=: eval 'GLOBIGNORE="${executables[*]/%/.md}"'
+  install -Dm655 -t "$pkgdir/usr/share/doc/${pkgname%-git}" *.md
 }
