@@ -81,6 +81,13 @@ To stop _aurbranch_ from generating it and instead make it use the existing one,
 ```
 
 
+To make it more visible, you may want to keep the file without its leading dot and rename while composing the revision, which you can do with a colon.
+
+```bash
+> aurbranch examplepackage.* SRCINFO:.SRCINFO
+```
+
+
 With complex command lines like these, it may be useful to store them in a little script inside your repository. Then your co-maintainers also see how to upload new versions.
 
 ```bash

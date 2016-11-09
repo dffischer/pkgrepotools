@@ -22,6 +22,7 @@ shift $(($OPTIND - 1))
 if ! [[ " ${@##*${separator:=:}} " =~ " .SRCINFO " ]]
 then
   mksrcinfo ${pkgbuild:+"$pkgbuild"}
+  pass=(.SRCINFO)
 fi
 
 # Determine branch name.
@@ -48,7 +49,7 @@ done
 offbranch \
   -b "$branch" \
   ${separator+-s} ${separator+"$separator"} \
-  "${pkgbuild:-PKGBUILD}${separator:-:}PKGBUILD" .SRCINFO "${pass[@]}"
+  "${pkgbuild:-PKGBUILD}${separator:-:}PKGBUILD" "${pass[@]}"
 
 # Create branch, if needed, and propagate errors.
 case $? in
