@@ -97,7 +97,7 @@ case $? in
   0) # Nothing changed, nothing to commit.
     exit 3 ;;
   1) # Changes to commit
-    parent=(-p "$branch")
+    parent="$branch"
     echo "updating $branch"
     ;;
   128) # Branch does not yet exist.
@@ -125,6 +125,7 @@ fi
 # Commit.
 git update-ref "$branch" $(\
   git commit-tree $(git write-tree) \
-  -F "$clean" "${parent[@]}" )
+  -F "$clean" ${parent+-p "$parent"} ) \
+  ${parent+"$parent"}
 
 exit $ret
