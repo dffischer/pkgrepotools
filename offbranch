@@ -37,22 +37,35 @@ export GIT_INDEX_FILE="$tmpdir/index"
 
 
 # Compose new revision.
-for argument
-do
-  addpath="${argument##*${separator:=:}}"
-  filename="${argument%$separator*}"
+add() {
+  local filename="$1"
+  local addpath="$2"
   if [ ! -r "$filename" ]
   then
     printf "$(gettext "pathspec '%s' did not match any files")\n" "$filename" >&2
     exit 8
-  fi
-  if [ -n "$addpath" ]
+  elif [ -n "$addpath" ]
   then
-    git update-index --add --cacheinfo $(
-      stat -c '%a' "$filename"),$(
-      git hash-object --path "$addpath" -w "$filename"
-      ),"$addpath"
+    if [ -d "$filename" ]
+    then
+      find $filename/ -type f | while read file
+      do
+        add "$file" "${file/#"$filename"/"$addpath"}"
+      done
+    else
+      git update-index --add --cacheinfo $(
+        stat -c '%a' "$filename"),$(
+        git hash-object --path "$addpath" -w "$filename"
+        ),"$addpath"
+    fi
   fi
+}
+
+for argument
+do
+  addpath="${argument##*${separator:=:}}"
+  filename="${argument%$separator*}"
+  add "$filename" "$addpath"
   if [[ "$(realpath -s "$filename")" =~ ^"$(git rev-parse --show-toplevel)" ]]
   then
     messages+=("$filename")
