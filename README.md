@@ -8,7 +8,7 @@ Tired of all the clutter _makepkg-template_ causes in your PKGBUILD? Use makepkg
 
 For more details and options, see [the manual page](makepkg-expanded.md).
 
-Many functionalities are also available as separate tools and can easy life dealing with PKGBUILDs and the AUR even without templates.
+Many functionalities are also available as separate or additional tools and can ease life dealing with PKGBUILDs and the AUR even without templates.
 - [cp-pkgver](cp-pkgver.md) copies version variables from one PKGBUILD to another. It can be used by makepkg-expanded to propagate changes from the expanded variant back to the original script.
 - [clean-templates](clean-templates.md) removes template markers, mode lines and duplicate templates to make the result looks more like an ordinary PKGBUILD. It is automatically invoked my makepkg-expanded by default.
 - [graph-templates](graph-templates.md) helps to keep an overview of templates, build scripts and their relations. A [gvpr](http://www.graphviz.org/pdf/gvpr.1.pdf) [script](reachable.gvpr) is also included to restrict the graph to reachable nodes, which represent actually used templates.
