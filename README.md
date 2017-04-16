@@ -23,3 +23,14 @@ You can learn about how to use all of these in concert with [this tutorial](tuto
 As it is probably only useful in [Arch Linux](https://archlinux.org/), anyways, [go grab it from the AUR](http://aur.archlinux.org/packages/makepkg-expanded-git/).
 
 To use the [PKGBUILD](PKGBUILD) as it is kept in this repository, [the makepkg-template for git](https://github.com/dffischer/git-makepkg-template) has to be installed.
+
+
+## Dependencies
+
+To use _makepkg-expanded_, only pacman is needed, as it includes _makepkg-template_.
+
+The repository-oriented tools _offbranch_, _aurbranch_ and _aurremote_ need git.
+
+For _aurbranch_ to automatically generate _.SRCINFO_ files, it also needs [pkgbuild-introspection](https://www.archlinux.org/packages/community/any/pkgbuild-introspection/).
+
+The rest, _cp-pkgver_ and _clean-template_, function even just with bash and sed.

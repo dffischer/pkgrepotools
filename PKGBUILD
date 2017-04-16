@@ -9,8 +9,11 @@ pkgdesc="builds and distributes packages expanding templates off-file"
 arch=('any')
 url="https://github.com/dffischer/makepkg-expanded"
 license=('GPL')
-depends=('pacman')
+depends=('bash' 'sed')
 makedepends=('ruby-ronn')
+optdepends=('pacman: for makepkg-expanded'
+            'git: for offbranch, aurbranch and aurremote'
+            'pkgbuild-introspection: to run aurbranch without a .SRCINFO argument')
 
 # template input; name=git
 
