@@ -213,13 +213,20 @@ A few things are automatically taken care of by _makepkg-expanded_ here. Firstly
 You may have noticed that _aurbranch_ proposes a message to describe the commit to the AUR distribution branch with. This will be taken the last commit message affecting any of the files composing the commit. But it does not know that the _PKGBUILD_ it uses here was generated from the templates and thus ignore changes in the templates. It can be told to consider them for the message, but not actually add them, by passing them in with an empty name.
 
 ```bash
-makepkg-expanded -r 'aurbranch -p "$1" ../makepkg-templates:' -a
+makepkg-expanded -r 'aurbranch -p "$1" ../makepkg-templates: *' -a
 ```
 
 Note that their path has to be specified relative to the directories the _PKGBUILD_s reside is, as _aurbranch_ is run from there. Again _makepkg-expanded_ includes automatisms to ease life here. It passes the name of the expanded _PKGBUILD_, the corresponding original and all the template directories to the code snippet as parameters. They just have to be prefixed with a colon, which some bash trickery can do.
 
 ```bash
-makepkg-expanded -r 'aurbranch -p "$1" ${@/%/:}' -a
+makepkg-expanded -r 'aurbranch -p "$1" ${@/%/:} *' -a
+```
+
+
+There is only one caveat left: When there are any stray untracked files in the directory, the wild card catches them, too. While testing, this is most probably the case for the _package.tar.xz_, the _src_ and _pkg_ directories and any sources left from building the package. So it can be useful to restrict `*` to files tracked by Git. This can be done by filtering it in Git's _ls-files_.
+
+```bash
+makepkg-expanded -r 'aurbranch -p "$1" ${@/%/:} $(git ls-files *)' -a
 ```
 
 
