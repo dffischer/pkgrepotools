@@ -15,7 +15,7 @@ add_all() {
   done < <(find ! -readable -prune -o -iname ${1:-PKGBUILD} -print0)
 }
 
-while getopts ':hp:a:t:e:mdr:' argument
+while getopts ':hp:a:t:e:mdr:b' argument
 do
   case $argument in
     h)
@@ -31,6 +31,7 @@ do
       echo ' -m              keep template markers intact'
       echo ' -d              keep duplicate templates'
       echo ' -r <command>    command to execute for each PKGBUILD'
+      echo ' -b              alias for -r '\''aurbranch -p "$1" "${@/%/:}" $(git ls-files *)'\'
       exit ;;
     p) packages+=("$OPTARG") ;;
     a) add_all "$OPTARG" ;;
@@ -59,6 +60,7 @@ do
         }
       fi ;;
     r) process+=("$OPTARG") ;;
+    b) process+=('aurbranch -p "$1" "${@/%/:}" $(git ls-files *)') ;;
     \?) invalid_option ;;
     :)
       case "$OPTARG" in

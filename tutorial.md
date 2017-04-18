@@ -229,6 +229,8 @@ There is only one caveat left: When there are any stray untracked files in the d
 makepkg-expanded -r 'aurbranch -p "$1" ${@/%/:} $(git ls-files *)' -a
 ```
 
+This command for the `-r` option is that commonly useful that makepkg-expanded provides `-b` as a shorthand for it.
+
 
 # Adoption
 
