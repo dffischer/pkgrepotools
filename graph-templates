@@ -1,0 +1,14 @@
+#!/bin/bash
+
+echo 'digraph templates {'
+find -regextype posix-egrep \
+  \( -name 'PKGBUILD' -o -regex '.*-[[:digit:]]+\.template' \) \
+  -print0 | while read -rd $'' file
+do
+  name=${file%/PKGBUILD}
+  name=${name%-1.template}
+  name=${name##*/}
+  grep -Po '(?<=template (input|start); name=).*(?=;|$)' $file \
+    | sed "s/.*/  \"$name\" -> \"\0\";/"
+done
+echo '}'

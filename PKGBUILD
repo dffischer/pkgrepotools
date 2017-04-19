@@ -13,7 +13,8 @@ depends=('bash' 'sed')
 makedepends=('ruby-ronn')
 optdepends=('pacman: for makepkg-expanded'
             'git: for offbranch, aurbranch and aurremote'
-            'pkgbuild-introspection: to run aurbranch without a .SRCINFO argument')
+            'pkgbuild-introspection: to run aurbranch without a .SRCINFO argument'
+            'graphviz: to process what graph-templates generates')
 
 # template input; name=git
 
