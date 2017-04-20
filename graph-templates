@@ -1,14 +1,40 @@
 #!/bin/bash
 
-echo 'digraph templates {'
 find -regextype posix-egrep \
   \( -name 'PKGBUILD' -o -regex '.*-[[:digit:]]+\.template' \) \
-  -print0 | while read -rd $'' file
-do
-  name=${file%/PKGBUILD}
-  name=${name%-1.template}
-  name=${name##*/}
-  grep -Po '(?<=template (input|start); name=).*(?=;|$)' $file \
-    | sed "s/.*/  \"$name\" -> \"\0\";/"
-done
-echo '}'
+  -print0 | (
+  # Categorize.
+  declare -A templates
+  while read -rd $'' file
+  do
+    if [[ $file == *.template ]]
+    then
+      templates["$file"]="${file##*/}"
+    else
+      pkgbuilds+=("$file")
+    fi
+  done
+
+
+  # Find relations.
+  extract_templates() {
+    grep -Po '(?<=template (input|start); name=).*(?=;|$)' $1 \
+      | sed "s/.*/  \"$2\" -> \"\0\";/"
+  }
+
+  echo 'digraph templates {'
+  echo '  node [style=filled, fillcolor=gray]'
+  for template in "${!templates[@]}"
+  do
+    extract_templates "$template" \
+      "${templates[$template]%-[[:digit:]].template}"
+  done
+  echo '  node [style=solid]'
+  for pkgbuild in "${pkgbuilds[@]}"
+  do
+    extract_templates "$pkgbuild" \
+      "$(mksrcinfo -o /dev/stdout "$pkgbuild" \
+      | grep -Po '(?<=pkgbase = ).*')"
+  done
+  echo '}'
+)
