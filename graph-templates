@@ -1,8 +1,13 @@
 #!/bin/bash
 
-find -regextype posix-egrep \
-  \( -name 'PKGBUILD' -o -regex '.*-[[:digit:]]+\.template' \) \
-  -print0 | (
+if [ $# -gt 0 ]
+then
+  printf '%s\0' "$@"
+else
+  find -regextype posix-egrep \
+    \( -name 'PKGBUILD' -o -regex '.*-[[:digit:]]+\.template' \) \
+    -print0
+fi | (
   # Categorize.
   declare -A templates
   while read -rd $'' file

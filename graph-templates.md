@@ -3,14 +3,16 @@ graph-templates(1) -- graph template include relations
 
 ## SYNOPSIS
 
-`graph-template`
+`graph-template` [files]
 
 
 ## DESCRIPTION
 
-This program will search for all PKGBUILDs and \*.template files, look up which templates they include and output this relation in graphiz' dot format.
+This program will look up which templates the given files include and output this relation in graphiz' dot format.
 
 Templates, recognized by their file extension are colored gray.
+
+If no files are given, all files names PKGBUILD or ending with .template will be considered instead.
 
 
 ## BUGS
