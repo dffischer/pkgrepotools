@@ -3,7 +3,7 @@ graph-templates(1) -- graph template include relations
 
 ## SYNOPSIS
 
-`graph-template` [files]
+`graph-template` [-h] [files]
 
 
 ## DESCRIPTION

@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ "$1" == '-h' ]
+then
+  echo "usage: $0 [files]"
+  echo 'display template inclusion relation in graphiz dot format'
+  exit
+fi
+
 if [ $# -gt 0 ]
 then
   printf '%s\0' "$@"
