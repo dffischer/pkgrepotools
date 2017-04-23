@@ -65,7 +65,7 @@ Exit codes higher than 7 are not changed by the -q flag and indicate errors in p
 
 Files residing in repositories other than the one including the current working directory are not scanned for commit messages to propose. This could be useful for example when branch contents are to be composed from data scattered across multiple repositories or utilizes templates from elsewhere. To implement this, simply calling git log to find the last relevant message is not enough any more. The files would have to be assorted by repository, then the last message would have to be collected from all of them, each including a timestamp to sort them by, so that the most recent one can be used.
 
-This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http://github.com/dffischer/makepkg-expanded). Bugs can be filed in [the tracker found there](http://github.com/dffischer/makepkg-expanded/issues).
+This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http://github.com/dffischer/pkgrepotools). Bugs can be filed in [the tracker found there](http://github.com/dffischer/pkgrepotools/issues).
 
 
 ## SEE ALSO

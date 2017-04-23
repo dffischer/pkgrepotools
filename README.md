@@ -1,4 +1,4 @@
-# makepkg-expanded
+# pkgrepotools
 
 Tired of all the clutter _makepkg-template_ causes in your PKGBUILD? Use makepkg-expanded to build them leaving the template markers exactly as you wrote them. It will
 - build a package without any change to the PKGBUILD,
@@ -21,7 +21,7 @@ You can learn about how to use all of these in concert with [this tutorial](tuto
 
 ## Installation
 
-As it is probably only useful in [Arch Linux](https://archlinux.org/), anyways, [go grab it from the AUR](http://aur.archlinux.org/packages/makepkg-expanded-git/).
+As it is probably only useful in [Arch Linux](https://archlinux.org/), anyways, [go grab it from the AUR](http://aur.archlinux.org/packages/pkgrepotools-git/).
 
 To use the [PKGBUILD](PKGBUILD) as it is kept in this repository, [the makepkg-template for git](https://github.com/dffischer/git-makepkg-template) has to be installed.
 

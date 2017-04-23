@@ -53,7 +53,7 @@ Any remaining error is indicated by an exit code of 1 or greater. This mostly ha
 
 ## BUGS
 
-This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http://github.com/dffischer/makepkg-expanded). Bugs can be filed in [the tracker found there](http://github.com/dffischer/makepkg-expanded/issues).
+This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http://github.com/dffischer/pkgrepotools). Bugs can be filed in [the tracker found there](http://github.com/dffischer/pkgrepotools/issues).
 
 
 ## SEE ALSO

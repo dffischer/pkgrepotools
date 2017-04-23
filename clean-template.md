@@ -45,7 +45,7 @@ If a template marker is opened buy not closed, indicated by a "template start" w
 
 Not all such broken templates lead to errors. They only cause an error if they are part of or delimit a template that is to be removed in the curse of deduplication. Thus, clean-template cannot be used to check template marker validity. This is intentional to speed up processing.
 
-This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http://github.com/dffischer/makepkg-expanded). Bugs can be filed in [the tracker found there](http://github.com/dffischer/makepkg-expanded/issues).
+This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http://github.com/dffischer/pkgrepotools). Bugs can be filed in [the tracker found there](http://github.com/dffischer/pkgrepotools/issues).
 
 
 ## SEE ALSO
