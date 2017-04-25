@@ -55,5 +55,5 @@ offbranch \
 case $? in
   2) aurremote "$pkgbase" "$branch" ;;
   [0-7]) ;;
-  *) exit 1 ;;
+  *) exit $? ;;
 esac

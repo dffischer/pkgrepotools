@@ -48,6 +48,8 @@ If the branch does not yet exist, a remote will be set up in addition to its cre
 
 When offbranch(1) completed successfully, aurbranch will return with code 0. Note that this is also the case when the commit was purposely aborted by an empty commit message or the editor did not even come up because no changes were introduced.
 
+Error codes greater than 7 indicating offbranch(1) failure are directly passed through.
+
 Any remaining error is indicated by an exit code of 1 or greater. This mostly happens when something is wrong with the arguments.
 
 
