@@ -19,14 +19,16 @@ done
 shift $(($OPTIND - 1))
 
 # Generate missing .SRCINFO.
-if ! [[ " ${@##*${separator:=:}} " =~ " .SRCINFO " ]]
+if [[ " $* " =~ \ (.*)"${separator:=:}.SRCINFO " ]]
 then
+  srcinfo="${BASH_REMATCH[1]}"
+else
   mksrcinfo ${pkgbuild:+"$pkgbuild"}
   pass=(.SRCINFO)
 fi
 
 # Determine branch name.
-readonly pkgbase="$(grep -Po "(?<=pkgbase = ).*" .SRCINFO)"
+readonly pkgbase="$(grep -Po "(?<=pkgbase = ).*" "${srcinfo:-.SRCINFO}")"
 branch=aur
 if [ -n "$(git rev-parse --show-prefix 2> /dev/null)" ]
 then
