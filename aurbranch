@@ -49,9 +49,8 @@ done
 
 # Update the branch.
 offbranch \
-  -b "$branch" \
-  ${separator+-s} ${separator+"$separator"} \
-  "${pkgbuild:-PKGBUILD}${separator:-:}PKGBUILD" "${pass[@]}"
+  -b "$branch" -s "$separator" \
+  "${pkgbuild:-PKGBUILD}${separator}PKGBUILD" "${pass[@]}"
 
 # Create branch, if needed, and propagate errors.
 case $? in
