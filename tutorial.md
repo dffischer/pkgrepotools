@@ -28,7 +28,7 @@ creating refs/heads/aur
 It will then ask for a commit message, generate the _.SRCINFO_ from the _PKGBUILD_ and commits them as the first revision of a branch named _aur_. As this branch did not previously exist, it also sets up a remote named exactly like the package (_examplepackage_ in this case) and configure the branch to track the master branch of this remote. So consequently, uploading can be invoked with
 
 ```bash
-> git push examplepackage
+> git push aur
 ```
 
 Whenever a new release should be distributed to the AUR, just repeat these two commands.
@@ -117,13 +117,13 @@ collection
     └── PKGBUILD
 ```
 
-The _aurbranch_ helper is aware of this setup. When run from within a subdirectory of the repository it places all paths as seen from this perspective and creates branches named _aur/pkgbase_ with the _pkgbase_ extracted from the _PKGBUILD_. So new revisions for the distribution branches _aur/one_, _aur/two_ and _aur/three_ can be composed and sent like so.
+The _aurbranch_ helper is aware of this setup. When run from within a subdirectory of the repository it places all paths as seen from this perspective and creates branches and remotes named _aur/pkgbase_ with the _pkgbase_ extracted from the _PKGBUILD_. So new revisions for the distribution branches _aur/one_, _aur/two_ and _aur/three_ can be composed and sent like so.
 
 ```bash
 > ( cd one; aurbranch one.desktop one.install )
 > ( cd two; aurbranch two.desktop two.install )
 > ( cd three; aurbranch )
-> git push one ; git push two ; git push three
+> git push aur/one ; git push aur/two ; git push aur/three
 ```
 
 

@@ -2,7 +2,7 @@
 
 # Parse arguments.
 print_help() {
-  echo "usage: $0 <package> [branch]"
+  echo "usage: $0 <package> [name]"
   echo "       $0 -h"
   echo 'Set up git remote and branch pointing to AUR package repository.'
   exit 1
@@ -18,19 +18,19 @@ case $# in
 esac
 
 readonly master="refs/heads/master"
-readonly branch="${2:-aur/$1}"
+readonly name="${2:-aur/$1}"
 
 
 # Set up remote.
-git remote add -t master "$1" "ssh://aur@aur4.archlinux.org/${1}.git"
+git remote add -t master "$name" "ssh://aur@aur4.archlinux.org/${1}.git"
 
 # Restrict parameterless pushes to the branch.
-git config "remote.${1}.push" "refs/heads/$branch:$master"
+git config "remote.${name}.push" "refs/heads/$name:$master"
 
 # Make branch track remote master.
-git config "branch.${branch}.remote" "$1"
-git config "branch.${branch}.merge" "$master"
+git config "branch.${name}.remote" "$name"
+git config "branch.${name}.merge" "$master"
 
 # Pull in missing branch.
-git rev-parse --verify --quiet "$branch" > /dev/null || \
-  git fetch "$1" "$master:refs/heads/$branch"
+git rev-parse --verify --quiet "$name" > /dev/null || \
+  git fetch "$name" "$master:refs/heads/$name"
