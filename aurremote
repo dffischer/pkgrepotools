@@ -1,28 +1,31 @@
 #!/bin/bash
 
 # Parse arguments.
-print_help() {
-  echo "usage: $0 <package> [name]"
-  echo "       $0 -h"
-  echo 'Set up git remote and branch pointing to AUR package repository.'
-  exit 1
-}
+while getopts 'hn:' argument
+do
+  case $argument in
+    h)
+      echo "usage: $0 [options] <package>"
+      echo 'Set up git remote and branch pointing to AUR package repository.'
+      echo ' -h         show this help text'
+      echo ' -n <name>  choose branch and remote name instead of aur/<package>'
+      exit ;;
+    n) name="$OPTARG" ;;
+    \?) exit 1 ;;
+  esac
+done
 
-case $# in
-  0) print_help ;;
-  1) [ "$1" == -h ] && print_help ;;
-  2) ;;
-  *)
-    gettext -sd git "Too many arguments."
-    exit 1 ;;
-esac
+readonly package="${!OPTIND}"
+if [ -z "$package" ]
+then
+  gettext -sd bash 'argument expected'
+  exit 1
+fi
 
 readonly master="refs/heads/master"
-readonly name="${2:-aur/$1}"
-
 
 # Set up remote.
-git remote add -t master "$name" "ssh://aur@aur4.archlinux.org/${1}.git"
+git remote add -t master "${name:=aur/$package}" "ssh://aur@aur4.archlinux.org/${package}.git"
 
 # Restrict parameterless pushes to the branch.
 git config "remote.${name}.push" "refs/heads/$name:$master"
