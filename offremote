@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Parse arguments.
+while getopts 'hn:' argument
+do
+  case $argument in
+    h)
+      echo "usage: $0 [options] <url>"
+      echo 'Set up git remote and branch pointing to AUR package repository.'
+      echo ' -h         show this help text'
+      echo ' -n <name>  branch and remote name instead of the repository name'
+      exit ;;
+    n) name="$OPTARG" ;;
+    \?) exit 1 ;;
+  esac
+done
+
+readonly url="${!OPTIND}"
+if [ -z "$url" ]
+then
+  gettext -sd bash 'argument expected'
+  exit 1
+fi
+
+
+# Prepare values.
+readonly master="refs/heads/master"
+
+if [ -z "$name" ]
+then
+  name=${url%/}
+  name=${name##*/}
+  name=${name%.git}
+fi
+
+
+# Set up remote.
+git remote add -t master "$name" "$url"
+
+# Restrict parameterless pushes to the branch.
+git config "remote.${name}.push" "refs/heads/$name:$master"
+
+# Make branch track remote master.
+git config "branch.${name}.remote" "$name"
+git config "branch.${name}.merge" "$master"
+
+# Pull in missing branch.
+git rev-parse --verify --quiet "$name" > /dev/null || \
+  git fetch "$name" "$master:refs/heads/$name"

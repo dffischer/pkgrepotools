@@ -54,7 +54,8 @@ offbranch \
 
 # Create branch, if needed, and propagate errors.
 case $? in
-  2) aurremote -n "$branch" "$pkgbase" ;;
+  2) offremote -n "$branch" \
+    "ssh://aur@aur.archlinux.org/${pkgbase}.git" ;;
   [0-7]) ;;
   *) exit $? ;;
 esac

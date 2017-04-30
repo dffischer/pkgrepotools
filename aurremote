@@ -1,16 +1,14 @@
 #!/bin/bash
 
 # Parse arguments.
-while getopts 'hn:' argument
+while getopts 'h' argument
 do
   case $argument in
     h)
       echo "usage: $0 [options] <package>"
       echo 'Set up git remote and branch pointing to AUR package repository.'
-      echo ' -h         show this help text'
-      echo ' -n <name>  choose branch and remote name instead of aur/<package>'
+      echo ' -h  show this help text'
       exit ;;
-    n) name="$OPTARG" ;;
     \?) exit 1 ;;
   esac
 done
@@ -22,18 +20,5 @@ then
   exit 1
 fi
 
-readonly master="refs/heads/master"
-
-# Set up remote.
-git remote add -t master "${name:=aur/$package}" "ssh://aur@aur4.archlinux.org/${package}.git"
-
-# Restrict parameterless pushes to the branch.
-git config "remote.${name}.push" "refs/heads/$name:$master"
-
-# Make branch track remote master.
-git config "branch.${name}.remote" "$name"
-git config "branch.${name}.merge" "$master"
-
-# Pull in missing branch.
-git rev-parse --verify --quiet "$name" > /dev/null || \
-  git fetch "$name" "$master:refs/heads/$name"
+# Prepare branch.
+exec offremote -n "aur/$package" "ssh://aur@aur4.archlinux.org/${package}.git"

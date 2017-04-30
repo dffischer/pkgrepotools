@@ -14,7 +14,8 @@ Many functionalities are also available as separate tools and can easy life deal
 - [graph-templates](graph-templates.md) helps to keep an overview of templates, build scripts and their relations.
 - [aurbranch](aurbranch.md) commits the PKGBUILD and related files to a dedicated branch suitable to push to the AUR. It can not only be used directly in [the `-r` option of makepkg-expanded](makepkg-expanded.md#OPTIONS), but is generally usable when a slightly changed variant of a repository should be pushed to the AUR.
 - [aurremote](aurremote.md) helps to prepare these branches for AUR upload. It is normally invoked automatically by _aurbranch_ when it creates a new distribution branch, but can be useful on its own when adoption packages.
-- [offbranch](offbranch.md) is a tool to allow commits to a git branch without checking it out. It is completely agnostic of any AUR or pacman related specialities.
+- [offbranch](offbranch.md) is a tool to allow commits to a git branch without checking it out. It is completely agnostic of any AUR or pacman related specialities as is
+- [offremote](offremote.md) which prepares remotes tracking exactly one branch of another repository.
 
 You can learn about how to use all of these in concert with [this tutorial](tutorial.md).
 
