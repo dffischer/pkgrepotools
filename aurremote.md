@@ -26,6 +26,9 @@ If the local branch does not yet exist, aurremote acts to adopt an existing pack
   - `-h`:
     Shows a summary of the options.
 
+  - `-c`:
+    Act as suited for a package collection. Instead of simply calling them _aur_, remote and branch name are suffixed include the package name.
+
 
 ## EXIT STATUS
 

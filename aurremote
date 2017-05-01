@@ -1,14 +1,16 @@
 #!/bin/bash
 
 # Parse arguments.
-while getopts 'h' argument
+while getopts 'hc' argument
 do
   case $argument in
     h)
       echo "usage: $0 [options] <package>"
       echo 'Set up git remote and branch pointing to AUR package repository.'
       echo ' -h  show this help text'
+      echo ' -c  include the name of the package in branch and remote name'
       exit ;;
+    c) name=/ ;;
     \?) exit 1 ;;
   esac
 done
@@ -21,4 +23,6 @@ then
 fi
 
 # Prepare branch.
-exec offremote -n "aur/$package" "ssh://aur@aur4.archlinux.org/${package}.git"
+exec offremote \
+  -n "aur${name+/${package}}" \
+  "ssh://aur@aur4.archlinux.org/${package}.git"
