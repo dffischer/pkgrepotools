@@ -43,7 +43,3 @@ git config "remote.${name}.push" "refs/heads/$name:$master"
 # Make branch track remote master.
 git config "branch.${name}.remote" "$name"
 git config "branch.${name}.merge" "$master"
-
-# Pull in missing branch.
-git rev-parse --verify --quiet "$name" > /dev/null || \
-  git fetch "$name" "$master:refs/heads/$name"

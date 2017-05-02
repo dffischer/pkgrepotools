@@ -1,9 +1,9 @@
-aurremote(1) -- set up git remote and branch for AUR distibution
-================================================================
+auradopt(1) -- adopt an AUR package as a branch to an existing git repository
+=============================================================================
 
 ## SYNOPSIS
 
-`aurremote` [`options`] <package>
+`auradopt` [`options`] <package>
 
 
 ## DESCRIPTION
@@ -16,9 +16,7 @@ In the Git repository it was run from within, it will configure
 
   - a local branch of the same name to track the master of this remote
 
-both named like the package.
-
-If the local branch does not yet exist, aurremote acts to adopt an existing package. The history will immedialty be pulled to the local branch. If a local branch already is present, it is assumed that the package was not yet created and pulling from there would thus lead to an error. You may fetch the remote manually afterwards.
+both named like the package, and then immedialty pull remote history to the local branch.
 
 
 ## OPTIONS

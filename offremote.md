@@ -12,8 +12,6 @@ This program prepares a remote associating a exactly one local branch with a rem
 
 It is mostly used to port possibly modified parts of the local histroy to a remote repository not usually pushed to using tools like offbranch(1) or incorporating remote history into local branches.
 
-If the local branch does not yet exist, remote history will immedialty be pulled to the local branch. If a local branch already is present, it is assumed that the remote branch does not yet exist and pulling from there would thus lead to an error. If you know better, you may fetch the remote manually afterwards.
-
 
 ## OPTIONS
 

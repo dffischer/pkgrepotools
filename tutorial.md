@@ -234,10 +234,10 @@ This command for the `-r` option is that commonly useful that makepkg-expanded p
 
 # Adoption
 
-When adopting a package, it comes with a history to build up on. Especially when integrating a newly adopted package into a collection, it should be pulled into the repository as a distribution branch so that _aurbranch_ can add further commits on top of it. [The _aurremote_ program](aurremote.md) can configure branch and remote. When creating a branch anew, it will also pull in the history from the remote it set up.
+When adopting a package, it comes with a history to build up on. Especially when integrating a newly adopted package into a collection, it should be pulled into the repository as a distribution branch so that _aurbranch_ can add further commits on top of it. [The _auradopt_ program](auradopt.md) can configure branch and remote. When creating a branch anew, it will also pull in the history from the remote it set up.
 
 ```bash
-aurremote package-name
+auradopt package-name
 ```
 
 

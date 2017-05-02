@@ -15,14 +15,19 @@ do
   esac
 done
 
+# Compose values.
 readonly package="${!OPTIND}"
 if [ -z "$package" ]
 then
   gettext -sd bash 'argument expected'
   exit 1
 fi
+readonly name="aur${name+/${package}}"
 
 # Prepare branch.
-exec offremote \
-  -n "aur${name+/${package}}" \
-  "ssh://aur@aur4.archlinux.org/${package}.git"
+offremote -n "$name" \
+  "ssh://aur@aur4.archlinux.org/${package}.git" \
+  || exit $?
+
+# Pull in history.
+git fetch "$name" "refs/heads/master:refs/heads/$name"
