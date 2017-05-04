@@ -34,6 +34,15 @@ then
 fi
 
 
+# Reject reconfiguring an existing branch.
+if git rev-parse --verify --quiet "$name" > /dev/null
+then
+  printf "$(gettext -d git "A branch named '%s' already exists.")\n" \
+    "$name" >&2
+  exit 1
+fi
+
+
 # Set up remote.
 git remote add -t master "$name" "$url" || exit $?
 

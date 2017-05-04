@@ -31,7 +31,9 @@ This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http:
 
 When branch and remote were sucessfully configured, the program exits with return code 0.
 
-Errors on remote creation are passed through unaltered from git-remote(1). Most probably, 128 will signal that the remote already exists. No branch will have been created when the program is aborted this way.
+The attempt to reconfigure an existing branch will be rejected returning 1.
+
+Errors on remote creation are passed through unaltered from git-remote(1). Most probably, 128 will signal that the remote already exists. No branch nor remote will have been created when the program is aborted by any error.
 
 
 ## SEE ALSO
