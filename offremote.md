@@ -21,6 +21,9 @@ It is mostly used to port possibly modified parts of the local histroy to a remo
   - `-n` _name_:
     Specify the remote and branch name, instead of the name of the remote repository.
 
+  - `-f`:
+    Reconfigure an already existing branch.
+
 
 ## BUGS
 
@@ -31,9 +34,9 @@ This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http:
 
 When branch and remote were sucessfully configured, the program exits with return code 0.
 
-The attempt to reconfigure an existing branch will be rejected returning 1.
+The attempt to reconfigure an existing branch will be rejected returning 1. This can be suppressed with the _-f_ flag.
 
-Errors on remote creation are passed through unaltered from git-remote(1). Most probably, 128 will signal that the remote already exists. No branch nor remote will have been created when the program is aborted by any error.
+Errors on remote creation cannot be suppressed. They are passed through unaltered from git-remote(1). Most probably, 128 will signal that the remote already exists. No branch will have been created when the program is aborted by any error.
 
 
 ## SEE ALSO

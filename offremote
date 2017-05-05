@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Parse arguments.
-while getopts 'hn:' argument
+while getopts 'hn:f' argument
 do
   case $argument in
     h)
@@ -9,8 +9,10 @@ do
       echo 'Set up git remote and branch pointing to AUR package repository.'
       echo ' -h         show this help text'
       echo ' -n <name>  branch and remote name instead of the repository name'
+      echo ' -f         reconfigure an existing branch'
       exit ;;
     n) name="$OPTARG" ;;
+    f) check=false ;;
     \?) exit 1 ;;
   esac
 done
@@ -35,7 +37,7 @@ fi
 
 
 # Reject reconfiguring an existing branch.
-if git rev-parse --verify --quiet "$name" > /dev/null
+if $check && git rev-parse --verify --quiet "$name" > /dev/null
 then
   printf "$(gettext -d git "A branch named '%s' already exists.")\n" \
     "$name" >&2
