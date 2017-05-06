@@ -10,7 +10,7 @@ do
       echo ' -h  show this help text'
       echo ' -c  include the name of the package in branch and remote name'
       exit ;;
-    c) name=/ ;;
+    c) name= ;;
     \?) exit 1 ;;
   esac
 done
@@ -22,7 +22,17 @@ then
   gettext -sd bash 'argument expected'
   exit 1
 fi
+readonly conflicts="aur${name-/*}"
 readonly name="aur${name+/${package}}"
+
+# Check conflicting branches.
+if [ -n "$(git branch --list "$conflicts")" ]
+then
+  TEXTDOMAIN=git printf "$(gettext "cannot create '%s'"): $(
+    gettext "A branch named '%s' already exists.")\n" \
+    "$name" "$conflicts" >&2
+  exit 1
+fi
 
 # Prepare branch.
 offremote -n "$name" \
