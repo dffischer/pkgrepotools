@@ -115,7 +115,13 @@ do
       echo "GLOBIGNORE='.*:$expanded:$file'" > "$tmpenv"
       for run in "${process[@]}"
       do
-        BASH_ENV="$tmpenv" bash -c "$run" process-expanded \
+        if [[ "$run" =~ ^"exec bash "(([^\']|\\\')+)' "$@"'$ ]]
+        then
+          exec=("${BASH_REMATCH[1]}")
+        else
+          exec=(-c "$run")
+        fi
+        BASH_ENV="$tmpenv" bash "${exec[@]}" process-expanded \
           "$expanded" "$file" "${templates[@]}" || exit $?
       done
     ) || exit $? #)
