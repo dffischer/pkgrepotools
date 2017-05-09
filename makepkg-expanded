@@ -61,7 +61,7 @@ do
         }
       fi ;;
     r) process+=("$OPTARG") ;;
-    R) process+=("exec bash $(realpath "$OPTARG")"' "$@"') ;;
+    R) process+=("exec bash '$(realpath "$OPTARG" | sed "s/'/'\\''/g")'"' "$@"') ;;
     b) process+=('aurbranch -p "$1" "${@/%/:}" $(git ls-files *)') ;;
     \?) invalid_option ;;
     :)
@@ -117,7 +117,7 @@ do
       echo "GLOBIGNORE='.*:$expanded:$file'" > "$tmpenv"
       for run in "${process[@]}"
       do
-        if [[ "$run" =~ ^"exec bash "(([^\']|\\\')+)' "$@"'$ ]]
+        if [[ "$run" =~ ^"exec bash '"(([^\']|"'\\''")+)\'' "$@"'$ ]]
         then
           exec=("${BASH_REMATCH[1]}")
         else
