@@ -114,7 +114,7 @@ do
       [ ${PIPESTATUS[0]} -ne 0 ] && exit ${PIPESTATUS[0]}
 
       # process
-      echo "GLOBIGNORE='.*:$expanded:$file'" > "$tmpenv"
+      echo "GLOBIGNORE='${GLOBIGNORE:+$GLOBIGNORE:}.*:$expanded:$file'" > "$tmpenv"
       for run in "${process[@]}"
       do
         if [[ "$run" =~ ^"exec bash '"(([^\']|"'\\''")+)\'' "$@"'$ ]]
