@@ -11,7 +11,7 @@ then
 fi
 
 # Parse arguments.
-while getopts 'hs:b:' argument
+while getopts 'hs:b:n:' argument
 do
   case $argument in
     h)
@@ -20,9 +20,11 @@ do
       echo ' -h              show this help text'
       echo ' -s <separator>  separator between real file name and path in repository'
       echo ' -b <branch>     branch to commit to'
+      echo ' -n <number>     commit messages to propose'
       exit ;;
     s) separator="$OPTARG" ;;
     b) branch="refs/heads/$OPTARG" ;;
+    n) number="$OPTARG" ;;
     \?) exit 8 ;;
   esac
 done
@@ -98,7 +100,8 @@ diffinfo() {
 }
 
 message="$tmpdir/COMMIT_EDITMSG"
-{ git log -1 --format=%B -- "${messages[@]}" | head -c -1
+{ git log --format="%B%n$(printf '%0.s-' {1..72})" \
+    -n ${number:-1} -- "${messages[@]}" | head -n -2
   echo
   snipline | git stripspace -c
   diffinfo "${branch:=refs/heads/offbranch}"

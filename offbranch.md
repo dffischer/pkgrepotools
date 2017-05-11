@@ -28,6 +28,9 @@ All this is done without altering the state of the repository or its working tre
   - `-b` _branch_:
     Specify the branch to commit to, instead of _offbranch_. If this branch does not exist yet, it will be created.
 
+  - `-n` _number_:
+    Increase the number of commit messages to propose. They are searched for backwards through the history, newest first.
+
 All other arguments are treated as further files to include when composing the branch. Directories will be descended into as if all files recursively found in there were specified.
 
 The message of the last commit affecting any of these files, viewed from the current HEAD downwards, will be proposed as the description of the commit to be newly generated on the distribution branch. If any of these files are not under version control or unknown to the current branch, they will be silently ignored.
