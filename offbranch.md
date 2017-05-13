@@ -31,6 +31,13 @@ All this is done without altering the state of the repository or its working tre
   - `-n` _number_:
     Increase the number of commit messages to propose. They are searched for backwards through the history, newest first.
 
+  - `-m` _message_:
+    Pass a message to use for the commit created.
+
+    The editor is still brought up. This can be avoided by additionally setting the environment variable GIT_EDITOR to some no-operation like : .
+
+    If this option is given multiple times, only the last one is effective. It will overwrite any `-n` option.
+
 All other arguments are treated as further files to include when composing the branch. Directories will be descended into as if all files recursively found in there were specified.
 
 The message of the last commit affecting any of these files, viewed from the current HEAD downwards, will be proposed as the description of the commit to be newly generated on the distribution branch. If any of these files are not under version control or unknown to the current branch, they will be silently ignored.
