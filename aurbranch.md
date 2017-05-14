@@ -25,12 +25,9 @@ It uses offbranch(1) to compose a new revision from PKGBUILD, .SRCINFO and given
 
     If the original PKGBUILD is tracked by the repository, it is recommended to also specify it prefixed by a colon so offbranch(1) considers it when proposing a commit message.
 
-  - `-s` _separator_:
-    Change the separator for renaming.
+Apart from this, all options offbranch(1) accepts are also valid to aurbranch, except `-b`. They will be passed through.
 
-    This option is passed through unaltered to offbranch(1).
-
-All file names are directly passed to offbranch(1), accompanied by the PKGBUILD and .SRCINFO. This provides the full range of features such as renaming files and specifying paths to search for a commit message. For more details, see the offbranch(1) manual page, especially the section about "Renaming Files".
+All file names are handed over to offbranch(1), accompanied by the PKGBUILD and .SRCINFO. This provides the full range of features such as renaming files and specifying paths to search for a commit message. For more details, see the offbranch(1) manual page, especially the section about "Renaming Files".
 
 All symbolic links that appear in the arguments are resolved and replaced with their link targets. That means that it is even safe to include links pointing outside the repository, as only the content will be commited instead of the plain link reference.
 

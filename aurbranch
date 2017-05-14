@@ -1,19 +1,30 @@
 #!/bin/bash
 
+# Compose option string.
+opts="$(
+  offbranch -h | while read
+  do
+    if [[ "$REPLY" =~ ^' -'([^b])( <.*>)?.* ]]
+    then
+      echo -n ${BASH_REMATCH[1]}${BASH_REMATCH[2]:+:}
+    fi
+  done
+)"
+
 # Parse arguments.
-while getopts 'hp:s:' argument
+while getopts "p:$opts" argument
 do
   case $argument in
     h)
       echo "usage: $0 [options] <additional files>"
       echo 'Commit changes in the PKGBUILD to an AUR distribution branch.'
-      echo ' -h              show this help text'
-      echo ' -p <script>     file to use in place of PKGBUILD'
-      echo ' -s <separator>  separator between real file name and path in repository'
+      echo ' -p <script>  file to use in place of PKGBUILD'
+      echo 'Also supports all options offbranch accepts, apart from -b.'
       exit ;;
     p) pkgbuild="$OPTARG" ;;
     s) separator="$OPTARG" ;;
     \?) exit 1 ;;
+    *) pass+=("-$argument" ${OPTARG:+"$OPTARG"}) ;;
   esac
 done
 shift $(($OPTIND - 1))
@@ -24,7 +35,7 @@ then
   srcinfo="${BASH_REMATCH[1]}"
 else
   mksrcinfo ${pkgbuild:+"$pkgbuild"}
-  pass=(.SRCINFO)
+  pass+=(.SRCINFO)
 fi
 
 # Determine branch name.
@@ -49,8 +60,8 @@ done
 
 # Update the branch.
 offbranch \
-  -b "$branch" -s "$separator" \
-  "${pkgbuild:-PKGBUILD}${separator}PKGBUILD" "${pass[@]}"
+  -b "$branch" -s "$separator" "${pass[@]}" \
+  "${pkgbuild:-PKGBUILD}${separator}PKGBUILD"
 
 # Create branch, if needed, and propagate errors.
 case $? in
