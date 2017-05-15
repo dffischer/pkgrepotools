@@ -22,7 +22,7 @@ do
       echo 'Also supports all options offbranch accepts, apart from -b.'
       exit ;;
     p) pkgbuild="$OPTARG" ;;
-    s) separator="$OPTARG" ;;
+    s) separator="$OPTARG" ;;&
     \?) exit 1 ;;
     *) pass+=("-$argument" ${OPTARG:+"$OPTARG"}) ;;
   esac
@@ -60,7 +60,7 @@ done
 
 # Update the branch.
 offbranch \
-  -b "$branch" -s "$separator" "${pass[@]}" \
+  -b "$branch" "${pass[@]}" \
   "${pkgbuild:-PKGBUILD}${separator}PKGBUILD"
 
 # Create branch, if needed, and propagate errors.
