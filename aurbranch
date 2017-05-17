@@ -35,7 +35,7 @@ then
   srcinfo="${BASH_REMATCH[1]}"
 else
   mksrcinfo ${pkgbuild:+"$pkgbuild"}
-  pass+=(.SRCINFO)
+  files=(.SRCINFO)
 fi
 
 # Determine branch name.
@@ -52,16 +52,16 @@ do
   filename="${argument%${separator}*}"
   if [ -h "$filename" ]
   then
-    pass+=("$(readlink "$filename")$separator${argument##*$separator}")
+    files+=("$(readlink "$filename")$separator${argument##*$separator}")
   else
-    pass+=("$argument")
+    files+=("$argument")
   fi
 done
 
 # Update the branch.
 offbranch \
   -b "$branch" "${pass[@]}" \
-  "${pkgbuild:-PKGBUILD}${separator}PKGBUILD"
+  "${pkgbuild:-PKGBUILD}${separator}PKGBUILD" "${files[@]}"
 
 # Create branch, if needed, and propagate errors.
 case $? in

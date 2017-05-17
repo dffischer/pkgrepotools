@@ -33,6 +33,8 @@ All symbolic links that appear in the arguments are resolved and replaced with t
 
 If an argument provides a file with the name .SRCINFO, aurbranch will use it directly. If it is not explicitly specified, a .SRCINFO will be generated from the PKGBUILD and overwrite a possibly present file of the same name in the current working directory.
 
+It is also possible to overwrite the PKGBUILD by specifying another file with the same name. The PKGBUILD, or the file chosen with the `-p` option, will then only be used to generate the .SRCINFO.
+
 
 ## BRANCH SETUP
 
