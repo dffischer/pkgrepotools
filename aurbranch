@@ -12,16 +12,18 @@ opts="$(
 )"
 
 # Parse arguments.
-while getopts "p:$opts" argument
+while getopts "p:i:$opts" argument
 do
   case $argument in
     h)
       echo "usage: $0 [options] <additional files>"
       echo 'Commit changes in the PKGBUILD to an AUR distribution branch.'
       echo ' -p <script>  file to use in place of PKGBUILD'
+      echo ' -i <script>  file to use in place of .SRCINFO'
       echo 'Also supports all options offbranch accepts, apart from -b.'
       exit ;;
     p) pkgbuild="$OPTARG" ;;
+    i) srcinfo="$OPTARG" ;;
     s) separator="$OPTARG" ;;&
     \?) exit 1 ;;
     *) pass+=("-$argument" ${OPTARG:+"$OPTARG"}) ;;
@@ -30,12 +32,9 @@ done
 shift $(($OPTIND - 1))
 
 # Generate missing .SRCINFO.
-if [[ " $* " =~ \ (.*)"${separator:=:}.SRCINFO " ]]
+if [ -z "$srcinfo" ]
 then
-  srcinfo="${BASH_REMATCH[1]}"
-else
   mksrcinfo ${pkgbuild:+"$pkgbuild"}
-  files=(.SRCINFO)
 fi
 
 # Determine branch name.
@@ -61,7 +60,9 @@ done
 # Update the branch.
 offbranch \
   -b "$branch" "${pass[@]}" \
-  "${pkgbuild:-PKGBUILD}${separator}PKGBUILD" "${files[@]}"
+  "${pkgbuild:-PKGBUILD}${separator}PKGBUILD" \
+  "$srcinfo${separator}.SRCINFO" \
+  "${files[@]}"
 
 # Create branch, if needed, and propagate errors.
 case $? in

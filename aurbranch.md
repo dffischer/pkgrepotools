@@ -23,17 +23,22 @@ It uses offbranch(1) to compose a new revision from PKGBUILD, .SRCINFO and given
 
     This file will be stored to the distribution branch under the name _PKGBUILD_, regardless of its original name. It will also be used to generate the .SRCINFO from to store beside it.
 
-    If the original PKGBUILD is tracked by the repository, it is recommended to also specify it prefixed by a colon so offbranch(1) considers it when proposing a commit message.
+    If an argument provides a file with the name _PKGBUILD_, it overwrites the choice of this option in regards of storage to the branch. The file chosen with this option will then only be used to generate the .SRCINFO, unless `-i` is also given.
 
-Apart from this, all options offbranch(1) accepts are also valid to aurbranch, except `-b`. They will be passed through.
+  - `-i` _info_:
+    Select a file to include as _.SRCINFO_, instead of automatically generating one from the _PKGBUILD_ using mksrcinfo.
+
+    This file will be stored to the distribution branch under the name _.SRCINFO_, regardless of its original name. Its _pkgbase_ variable will determine the branch name.
+
+    If an argument provides a file with the name _.SRCINFO_, it overwrites the choice of this option in regards of storage to the branch. The file chosen with this option will then only be queried for its _pkgbase_.
+
+When using one of these options with files automatically generated from original _PKGBUILD_ or _.SRCINFO_ tracked by the repository, it is recommended to also specify these prefixed by a colon so offbranch(1) considers it when proposing a commit message.
+
+Apart from these, all options offbranch(1) accepts are also valid to aurbranch, except `-b`. They will be passed through.
 
 All file names are handed over to offbranch(1), accompanied by the PKGBUILD and .SRCINFO. This provides the full range of features such as renaming files and specifying paths to search for a commit message. For more details, see the offbranch(1) manual page, especially the section about "Renaming Files".
 
 All symbolic links that appear in the arguments are resolved and replaced with their link targets. That means that it is even safe to include links pointing outside the repository, as only the content will be commited instead of the plain link reference.
-
-If an argument provides a file with the name .SRCINFO, aurbranch will use it directly. If it is not explicitly specified, a .SRCINFO will be generated from the PKGBUILD and overwrite a possibly present file of the same name in the current working directory.
-
-It is also possible to overwrite the PKGBUILD by specifying another file with the same name. The PKGBUILD, or the file chosen with the `-p` option, will then only be used to generate the .SRCINFO.
 
 
 ## BRANCH SETUP
