@@ -11,7 +11,7 @@ then
 fi
 
 # Parse arguments.
-while getopts 'hs:b:n:m:' argument
+while getopts 'hs:b:n:m:l:' argument
 do
   case $argument in
     h)
@@ -22,11 +22,13 @@ do
       echo ' -b <branch>     branch to commit to'
       echo ' -n <number>     commit messages to propose'
       echo ' -m <message>    fix message'
+      echo ' -l <file>       read file list from file'
       exit ;;
     s) separator="$OPTARG" ;;
     b) branch="refs/heads/$OPTARG" ;;
     n) number="$OPTARG" ;;
     m) text="$OPTARG" ;;
+    l) input+=("$OPTARG") ;;
     \?) exit 8 ;;
   esac
 done
@@ -63,7 +65,7 @@ add() {
   fi
 }
 
-for argument
+for argument in "$@" "${input[@]}"
 do
   filename="${argument%${separator:=:}*}"
   add "$filename" "${argument##*$separator}"

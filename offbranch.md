@@ -38,6 +38,15 @@ All this is done without altering the state of the repository or its working tre
 
     If this option is given multiple times, only the last one is effective. It will overwrite any `-n` option.
 
+  - `-l` _file_:
+    Read additional file names from a file, one per line.
+
+    Files can be renamed or only considered for the commit message as if they would be encountered as command line arguments.
+
+    This option is most useful when the output of file-listing commands is piped to it. For example, connecting find(1) to it makes it possible to add a filtered list of filenames. Inserting an xargs(1) to the pipeline would serve the same aim, but could splinter into multiple calls to offbranch, leading to multiple commits, which is normally not the intended result.
+
+    Reading from the standard input is possible by explicitly passing /dev/stdin, but be aware that you most probably want this input to be connected to a terminal for the commit message editor to receive. To use a file list while still interactively reviewing the commit use Process Substitution if supported by your shell or fall back to a pipe.
+
 All other arguments are treated as further files to include when composing the branch. Directories will be descended into as if all files recursively found in there were specified.
 
 The message of the last commit affecting any of these files, viewed from the current HEAD downwards, will be proposed as the description of the commit to be newly generated on the distribution branch. If any of these files are not under version control or unknown to the current branch, they will be silently ignored.
