@@ -43,9 +43,12 @@ All this is done without altering the state of the repository or its working tre
 
     Files can be renamed or only considered for the commit message as if they would be encountered as command line arguments.
 
-    This option is most useful when the output of file-listing commands is piped to it. For example, connecting find(1) to it makes it possible to add a filtered list of filenames. Inserting an xargs(1) to the pipeline would serve the same aim, but could splinter into multiple calls to offbranch, leading to multiple commits, which is normally not the intended result.
+  - `-z` _file_:
+    Read additional file names from a file like with `-l`, but delimit them by null characters.
 
-    Reading from the standard input is possible by explicitly passing /dev/stdin, but be aware that you most probably want this input to be connected to a terminal for the commit message editor to receive. To use a file list while still interactively reviewing the commit use Process Substitution if supported by your shell or fall back to a pipe.
+    This option is most useful when the output of file-listing commands is piped to it. For example, connecting find(1) (with -print0) to it makes it possible to add a filtered list of filenames. Inserting an xargs(1) to the pipeline would serve the same aim, but could splinter into multiple calls to offbranch, leading to multiple commits, which is normally not the intended result.
+
+    Reading from the standard input is possible by explicitly passing /dev/stdin with `-i` or `-z`, but be aware that you most probably want this input to be connected to a terminal for the commit message editor to receive. To use a file list while still interactively reviewing the commit use Process Substitution if supported by your shell or fall back to a pipe.
 
 All other arguments are treated as further files to include when composing the branch. Directories will be descended into as if all files recursively found in there were specified.
 

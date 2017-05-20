@@ -11,7 +11,8 @@ then
 fi
 
 # Parse arguments.
-while getopts 'hs:b:n:m:l:' argument
+typeset -A input
+while getopts 'hs:b:n:m:l:z:' argument
 do
   case $argument in
     h)
@@ -23,12 +24,14 @@ do
       echo ' -n <number>     commit messages to propose'
       echo ' -m <message>    fix message'
       echo ' -l <file>       read file list from file'
+      echo ' -z <file>       read zero delimited file list'
       exit ;;
     s) separator="$OPTARG" ;;
     b) branch="refs/heads/$OPTARG" ;;
     n) number="$OPTARG" ;;
     m) text="$OPTARG" ;;
-    l) input+=("$OPTARG") ;;
+    l) input["$OPTARG"]="tr '\n' '\\0'" ;;
+    z) input["$OPTARG"]=cat ;;
     \?) exit 8 ;;
   esac
 done
@@ -65,7 +68,7 @@ add() {
   fi
 }
 
-for argument in "$@" "${input[@]}"
+while read -rd $'\0' argument
 do
   filename="${argument%${separator:=:}*}"
   add "$filename" "${argument##*$separator}"
@@ -73,7 +76,13 @@ do
   then
     messages+=("$filename")
   fi
-done
+done < <(
+  printf "${@+%s\0}" "${@-""}"
+  for file in "${!input[@]}"
+  do
+    eval "${input["$file"]}" < "$file"
+  done
+)
 
 
 # Propose commit message, if necessary.
