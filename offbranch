@@ -11,31 +11,35 @@ then
 fi
 
 # Parse arguments.
-typeset -A input
-while getopts 'hs:b:n:m:l:z:' argument
+while [ $OPTIND -le $# ]
 do
-  case $argument in
-    h)
-      echo "usage: $0 [options] <files>"
-      echo 'Commit files on top of a branch not checked out.'
-      echo ' -h              show this help text'
-      echo ' -s <separator>  separator between real file name and path in repository'
-      echo ' -b <branch>     branch to commit to'
-      echo ' -n <number>     commit messages to propose'
-      echo ' -m <message>    fix message'
-      echo ' -l <file>       read file list from file'
-      echo ' -z <file>       read zero delimited file list'
-      exit ;;
-    s) separator="$OPTARG" ;;
-    b) branch="refs/heads/$OPTARG" ;;
-    n) number="$OPTARG" ;;
-    m) text="$OPTARG" ;;
-    l) input["$OPTARG"]="tr '\n' '\\0'" ;;
-    z) input["$OPTARG"]=cat ;;
-    \?) exit 8 ;;
-  esac
+  if getopts 'hs:b:n:m:l:z:' argument
+  then
+    case $argument in
+      h)
+        echo "usage: $0 [options] <files>"
+        echo 'Commit files on top of a branch not checked out.'
+        echo ' -h              show this help text'
+        echo ' -s <separator>  separator between real file name and path in repository'
+        echo ' -b <branch>     branch to commit to'
+        echo ' -n <number>     commit messages to propose'
+        echo ' -m <message>    fix message'
+        echo ' -l <file>       read file list from file'
+        echo ' -z <file>       read zero delimited file list'
+        exit ;;
+      s) separator="$OPTARG" ;;
+      b) branch="refs/heads/$OPTARG" ;;
+      n) number="$OPTARG" ;;
+      m) text="$OPTARG" ;;
+      l) input+=("list$OPTARG") ;;
+      z) input+=("zero$OPTARG") ;;
+      \?) exit 8 ;;
+    esac
+  else
+    input+=("file${!OPTIND}")
+    let OPTIND++
+  fi
 done
-shift $(($OPTIND - 1))
 
 
 # Compose resources in a temporary directory.
@@ -77,10 +81,13 @@ do
     messages+=("$filename")
   fi
 done < <(
-  printf "${@+%s\0}" "${@-""}"
-  for file in "${!input[@]}"
+  for argument in "${input[@]}"
   do
-    eval "${input["$file"]}" < "$file"
+    case "${argument:0:4}" in
+      file) printf '%s\0' "${argument:4}" ;;
+      list) tr '\n' '\0' < "${argument:4}" ;;
+      zero) cat "${argument:4}" ;;
+    esac
   done
 )
 
