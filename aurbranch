@@ -12,24 +12,29 @@ opts="$(
 )"
 
 # Parse arguments.
-while getopts "p:i:$opts" argument
+while [ $OPTIND -le $# ]
 do
-  case $argument in
-    h)
-      echo "usage: $0 [options] <additional files>"
-      echo 'Commit changes in the PKGBUILD to an AUR distribution branch.'
-      echo ' -p <script>  file to use in place of PKGBUILD'
-      echo ' -i <script>  file to use in place of .SRCINFO'
-      echo 'Also supports all options offbranch accepts, apart from -b.'
-      exit ;;
-    p) pkgbuild="$OPTARG" ;;
-    i) srcinfo="$OPTARG" ;;
-    s) separator="$OPTARG" ;;&
-    \?) exit 1 ;;
-    *) pass+=("-$argument" ${OPTARG:+"$OPTARG"}) ;;
-  esac
+  if getopts "p:i:$opts" argument
+  then
+    case $argument in
+      h)
+        echo "usage: $0 [options] <additional files>"
+        echo 'Commit changes in the PKGBUILD to an AUR distribution branch.'
+        echo ' -p <script>  file to use in place of PKGBUILD'
+        echo ' -i <script>  file to use in place of .SRCINFO'
+        echo 'Also supports all options offbranch accepts, apart from -b.'
+        exit ;;
+      p) pkgbuild="$OPTARG" ;;
+      i) srcinfo="$OPTARG" ;;
+      s) separator="$OPTARG" ;;&
+      \?) exit 1 ;;
+      *) pass+=("-$argument" ${OPTARG:+"$OPTARG"}) ;;
+    esac
+  else
+    arguments+=("${!OPTIND}")
+    let OPTIND++
+  fi
 done
-shift $(($OPTIND - 1))
 
 # Generate missing .SRCINFO.
 if [ -z "$srcinfo" ]
@@ -46,7 +51,7 @@ then
 fi
 
 # Resolve symbolic links.
-for argument
+for argument in "${arguments[@]}"
 do
   filename="${argument%${separator}*}"
   if [ -h "$filename" ]

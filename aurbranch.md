@@ -3,7 +3,7 @@ aurbranch(1) -- maintain a git branch for AUR distibution
 
 ## SYNOPSIS
 
-`aurbranch` [`options`] [additional files ...]
+`aurbranch` [`options` | additional files ...]
 
 
 ## DESCRIPTION
