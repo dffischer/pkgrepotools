@@ -56,18 +56,17 @@ do
   filename="${argument%${separator}*}"
   if [ -h "$filename" ]
   then
-    files+=("$(readlink "$filename")$separator${argument##*$separator}")
+    pass+=("$(readlink "$filename")$separator${argument##*$separator}")
   else
-    files+=("$argument")
+    pass=("$argument")
   fi
 done
 
 # Update the branch.
-offbranch \
-  -b "$branch" "${pass[@]}" \
+offbranch -b "$branch" \
   "${pkgbuild:-PKGBUILD}${separator}PKGBUILD" \
   "$srcinfo${separator}.SRCINFO" \
-  "${files[@]}"
+  "${pass[@]}"
 
 # Create branch, if needed, and propagate errors.
 case $? in
