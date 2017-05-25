@@ -10,38 +10,6 @@ then
   exit 9
 fi
 
-# Parse arguments.
-while [ $OPTIND -le $# ]
-do
-  if getopts 'hs:b:n:m:l:z:' argument
-  then
-    case $argument in
-      h)
-        echo "usage: $0 [options] <files>"
-        echo 'Commit files on top of a branch not checked out.'
-        echo ' -h              show this help text'
-        echo ' -s <separator>  separator between real file name and path in repository'
-        echo ' -b <branch>     branch to commit to'
-        echo ' -n <number>     commit messages to propose'
-        echo ' -m <message>    fix message'
-        echo ' -l <file>       read file list from file'
-        echo ' -z <file>       read zero delimited file list'
-        exit ;;
-      s) separator="$OPTARG" ;;
-      b) branch="refs/heads/$OPTARG" ;;
-      n) number="$OPTARG" ;;
-      m) text="$OPTARG" ;;
-      l) input+=("list$OPTARG") ;;
-      z) input+=("zero$OPTARG") ;;
-      \?) exit 8 ;;
-    esac
-  else
-    input+=("file${!OPTIND}")
-    let OPTIND++
-  fi
-done
-
-
 # Compose resources in a temporary directory.
 tmpdir="$(mktemp -d --tmpdir offbranch.XXXXXXXXXX)"
 trap "rm -r '$tmpdir'" EXIT
@@ -49,7 +17,7 @@ trap "rm -r '$tmpdir'" EXIT
 export GIT_INDEX_FILE="$tmpdir/index"
 
 
-# Compose new revision.
+# Parse arguments and compose new revision.
 add() {
   if [ ! -r "$1" ]
   then
@@ -72,24 +40,51 @@ add() {
   fi
 }
 
-while read -rd $'\0' argument
-do
-  filename="${argument%${separator:=:}*}"
-  add "$filename" "${argument##*$separator}"
+add-argument() {
+  filename="${1%${separator:=:}*}"
+  add "$filename" "${1##*$separator}"
   if [[ "$(realpath -s "$filename")" =~ ^"$(git rev-parse --show-toplevel)" ]]
   then
     messages+=("$filename")
   fi
-done < <(
-  for argument in "${input[@]}"
+}
+
+add-list() {
+  while read -rd "$1"
   do
-    case "${argument:0:4}" in
-      file) printf '%s\0' "${argument:4}" ;;
-      list) tr '\n' '\0' < "${argument:4}" ;;
-      zero) cat "${argument:4}" ;;
+    add-argument "$REPLY"
+  done < "$OPTARG"
+}
+
+while [ $OPTIND -le $# ]
+do
+  if getopts 'hs:b:n:m:l:z:' argument
+  then
+    case $argument in
+      h)
+        echo "usage: $0 [options] <files>"
+        echo 'Commit files on top of a branch not checked out.'
+        echo ' -h              show this help text'
+        echo ' -s <separator>  separator between real file name and path in repository'
+        echo ' -b <branch>     branch to commit to'
+        echo ' -n <number>     commit messages to propose'
+        echo ' -m <message>    fix message'
+        echo ' -l <file>       read file list from file'
+        echo ' -z <file>       read zero delimited file list'
+        exit ;;
+      s) separator="$OPTARG" ;;
+      b) branch="refs/heads/$OPTARG" ;;
+      n) number="$OPTARG" ;;
+      m) text="$OPTARG" ;;
+      l) add-list $'\n' ;;
+      z) add-list $'' ;;
+      \?) exit 8 ;;
     esac
-  done
-)
+  else
+    add-argument "${!OPTIND}"
+    let OPTIND++
+  fi
+done
 
 
 # Propose commit message, if necessary.

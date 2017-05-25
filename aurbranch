@@ -64,8 +64,8 @@ done
 
 # Update the branch.
 offbranch -b "$branch" \
-  "${pkgbuild:-PKGBUILD}${separator}PKGBUILD" \
-  "$srcinfo${separator}.SRCINFO" \
+  "${pkgbuild:+$pkgbuild:}PKGBUILD" \
+  "${srcinfo:+$srcinfo:}.SRCINFO" \
   "${pass[@]}"
 
 # Create branch, if needed, and propagate errors.

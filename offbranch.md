@@ -19,7 +19,7 @@ All this is done without altering the state of the repository or its working tre
     Shows a summary of the options.
 
   - `-s` _separator_:
-    Change the separator for renaming.
+    Change the separator for renaming of following files.
 
     Choosing an alternate string to tell apart the real file path from the name it is added to the distribution branch allows specifying file names that contain a colon.
 
