@@ -31,8 +31,18 @@ do
       *) pass+=("-$argument" ${OPTARG:+"$OPTARG"}) ;;
     esac
   else
-    arguments+=("${!OPTIND}")
+    argument="${!OPTIND}"
     let OPTIND++
+
+    # Resolve symbolic links.
+    filename="${argument%${separator:=:}*}"
+    addpath="${argument##*$separator}"
+    if [ -h "$filename" ]
+    then
+      pass+=("$(readlink "$filename")$separator$addpath")
+    else
+      pass+=("$argument")
+    fi
   fi
 done
 
@@ -49,18 +59,6 @@ if [ -n "$(git rev-parse --show-prefix 2> /dev/null)" ]
 then
   branch+="/$pkgbase"
 fi
-
-# Resolve symbolic links.
-for argument in "${arguments[@]}"
-do
-  filename="${argument%${separator}*}"
-  if [ -h "$filename" ]
-  then
-    pass+=("$(readlink "$filename")$separator${argument##*$separator}")
-  else
-    pass=("$argument")
-  fi
-done
 
 # Update the branch.
 offbranch -b "$branch" \
