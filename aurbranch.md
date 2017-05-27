@@ -38,7 +38,7 @@ Apart from these, all options offbranch(1) accepts are also valid to aurbranch, 
 
 All file names are handed over to offbranch(1), accompanied by the PKGBUILD and .SRCINFO. This provides the full range of features such as renaming files and specifying paths to search for a commit message. For more details, see the offbranch(1) manual page, especially the section about "Renaming Files".
 
-All symbolic links that appear in the arguments are resolved and replaced with their link targets. That means that it is even safe to include links pointing outside the repository, as only the content will be commited instead of the plain link reference.
+All symbolic links that appear in the arguments or files read by the `-l` and `-z` options are resolved and replaced with their link targets. That means that it is even safe to include links pointing outside the repository, as only the content will be commited instead of the plain link reference.
 
 
 ## BRANCH SETUP

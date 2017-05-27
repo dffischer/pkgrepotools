@@ -11,6 +11,34 @@ opts="$(
   done
 )"
 
+# Provide temporary directory.
+# File list for -z and -i arguments are rewritten there.
+readonly tmpdir="$(mktemp -d --tmpdir aurbranch.XXXXXXXXXX)"
+trap "rm -r '$tmpdir'" EXIT
+
+# Resolve symbolic links.
+resolve() {
+  local readonly addpath="${1##*${separator:=:}}"
+  local readonly filename="${1%$separator*}"
+  if [ -h "$filename" ]
+  then
+    printf '%s%s%s\0' "$(readlink "$filename")" "$separator" "$addpath"
+  else
+    printf '%s\0' "$1"
+  fi
+}
+
+# Resolve a list option argument, given delimiter.
+list() {
+  local readonly fifo="$(mktemp -up "$tmpdir" pipe.XXXXXXXXXX)"
+  mkfifo "$fifo"
+  while read -rd "$1"
+  do
+    resolve "$REPLY"
+  done < "$OPTARG" > "$fifo" &
+  pass+=("-z" "$fifo")
+}
+
 # Parse arguments.
 while [ $OPTIND -le $# ]
 do
@@ -27,22 +55,14 @@ do
       p) pkgbuild="$OPTARG" ;;
       i) srcinfo="$OPTARG" ;;
       s) separator="$OPTARG" ;;&
+      l) list $'\n' ;;
+      z) list $'' ;;
       \?) exit 1 ;;
       *) pass+=("-$argument" ${OPTARG:+"$OPTARG"}) ;;
     esac
   else
-    argument="${!OPTIND}"
+    pass+=("$(resolve "${!OPTIND}")")
     let OPTIND++
-
-    # Resolve symbolic links.
-    filename="${argument%${separator:=:}*}"
-    addpath="${argument##*$separator}"
-    if [ -h "$filename" ]
-    then
-      pass+=("$(readlink "$filename")$separator$addpath")
-    else
-      pass+=("$argument")
-    fi
   fi
 done
 
