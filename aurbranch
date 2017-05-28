@@ -66,6 +66,7 @@ do
   fi
 done
 
+
 # Generate missing .SRCINFO.
 if [ -z "$srcinfo" ]
 then
@@ -79,6 +80,7 @@ if [ -n "$(git rev-parse --show-prefix 2> /dev/null)" ]
 then
   branch+="/$pkgbase"
 fi
+
 
 # Update the branch.
 offbranch -b "$branch" \
