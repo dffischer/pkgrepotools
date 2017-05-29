@@ -141,7 +141,7 @@ case $? in
 esac
 
 # Edit commit message.
-eval $(git var GIT_EDITOR) "$message"
+eval "$(git var GIT_EDITOR)" '"$message"'
 
 # Clean everything below snip line, comments and whitespace.
 clean="$tmpdir/COMMIT_MSG"
