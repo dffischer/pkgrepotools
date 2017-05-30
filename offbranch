@@ -31,6 +31,11 @@ add() {
       do
         add "$file" "${file/#"$1"/"$2"}"
       done
+    elif [ -h "$1" ]
+    then
+      git update-index --add --cacheinfo 120000,$(
+        readlink -n "$1" | git hash-object --path "$2" -w --stdin
+        ),"$2"
     else
       git update-index --add --cacheinfo $(
         stat -c '%a' "$1"),$(
