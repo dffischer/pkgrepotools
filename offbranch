@@ -45,10 +45,11 @@ add() {
   fi
 }
 
+readonly toplevel="$(git rev-parse --show-toplevel)"
 add-argument() {
   filename="${1%${separator:=:}*}"
   add "$filename" "${1##*$separator}"
-  if [[ "$(realpath -s "$filename")" =~ ^"$(git rev-parse --show-toplevel)" ]]
+  if [[ "$(realpath -s "$filename")" =~ ^"$toplevel" ]]
   then
     messages+=("$filename")
   fi
