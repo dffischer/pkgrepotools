@@ -11,7 +11,7 @@ then
 fi
 
 # Compose resources in a temporary directory.
-tmpdir="$(mktemp -d --tmpdir offbranch.XXXXXXXXXX)"
+readonly tmpdir="$(mktemp -d --tmpdir offbranch.XXXXXXXXXX)"
 trap "rm -r '$tmpdir'" EXIT
 
 export GIT_INDEX_FILE="$tmpdir/index"
@@ -120,7 +120,7 @@ diffinfo() {
     "${1:-4b825dc642cb6eb9a060e54bf8d69288fbee4904}" 2> /dev/null
 }
 
-message="$tmpdir/COMMIT_EDITMSG"
+readonly message="$tmpdir/COMMIT_EDITMSG"
 { if [ -n "$text" ]
   then
     echo "$text"
@@ -146,11 +146,12 @@ case $? in
     ;;
 esac
 
+
 # Edit commit message.
 eval "$(git var GIT_EDITOR)" '"$message"'
 
 # Clean everything below snip line, comments and whitespace.
-clean="$tmpdir/COMMIT_MSG"
+readonly clean="$tmpdir/COMMIT_MSG"
 sed "/$snip/,\$d" "$message" | git stripspace -s > "$clean"
 
 # Reject empty messages.
