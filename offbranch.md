@@ -86,8 +86,6 @@ Exit codes higher than 7 are not changed by the -q flag and indicate errors in p
 
   - Running it outside of a git repository will lead to exit code 9.
 
-  - When applying the edited patch failed, offbranch aborts with exit code 10.
-
 
 ## BUGS
 
