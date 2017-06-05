@@ -189,6 +189,7 @@ then
   if ! git apply --cached --recount "$newdiff" > /dev/null
   then
     git apply --cached "$diff" > /dev/null
+    read -sn1
     continue  # Start editing commit anew.
   fi
 fi
