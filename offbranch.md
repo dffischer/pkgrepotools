@@ -57,7 +57,7 @@ The message of the last commit affecting any of these files, viewed from the cur
 
 ### Editing
 
-The diff view below the commit message does not only serve as a preview of what is to be committed. It can be edited to actually alter the changes to be applied.
+The diff view below the commit message does not only serve as a preview of what is to be committed. It can be edited to actually alter the changes to be applied. Deleting it completely has the same effect as leaving it unchanged. To abort the commit, remove the message instead of the diff.
 
 It is also possible to add files under a different name to begin with using the syntax _path:name_. If any argument contains a colon, the part before it is considered as the name of the file to include with the name taken from the part after the colon. This new name may also be a full path, simulating subdirectories in the distribution branch. If the path contains multiple colons, only the first one is used for separation. All further ones are considered part of the new name.
 

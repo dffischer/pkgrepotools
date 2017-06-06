@@ -183,7 +183,7 @@ fi
 
 # Detach and apply changed diff.
 sed "0,/$snip/d" "$message" > "$newdiff"
-if ! cmp -s "$diff" "$newdiff"
+if [ -s "$newdiff" ] && ! cmp -s "$diff" "$newdiff"
 then
   git apply --cached -R "$diff" > /dev/null
   if ! git apply --cached --recount "$newdiff" > /dev/null
