@@ -77,7 +77,7 @@ It does so by expanding the templates in a temporary file besides the original w
     It generates one command that will run in a dedicated bash instance and can be intermixed with more `-r` options.
 
   - `-b`:
-    An alias for the ubiquitous 'aurbranch -p "$1" "${@/%/:}" -z <(git ls-files -z *)', distributing all files tracked by Git.
+    An alias for the ubiquitous 'aurbranch -p "$1" "${@/%/:}" -z <(git ls-files -z *)', distributing all files tracked by Git, guarded against the case nothing matches the wildcard.
 
 
 ## EXIT STATUS

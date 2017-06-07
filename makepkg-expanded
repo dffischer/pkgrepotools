@@ -32,7 +32,7 @@ do
       echo ' -d              keep duplicate templates'
       echo ' -r <command>    command to execute for each PKGBUILD'
       echo ' -R <script>     file to read -r command from'
-      echo ' -b              -r '\''aurbranch -p "$1" "${@/%/:}" -z <(git ls-files -z *)'\'
+      echo ' -b              -r alias to aurbranch all files known to Git'
       exit ;;
     p) packages+=("$OPTARG") ;;
     a) add_all "$OPTARG" ;;
@@ -62,7 +62,9 @@ do
       fi ;;
     r) process+=("$OPTARG") ;;
     R) process+=("exec bash '$(realpath "$OPTARG" | sed "s/'/'\\''/g")'"' "$@"') ;;
-    b) process+=('aurbranch -p "$1" "${@/%/:}" -z <(git ls-files -z *)') ;;
+    b)
+      process+=('exec aurbranch -p "$1" "${@/%/:}" -z <(
+        shopt -s nullglob; git ls-files -z .git *)') ;;
     \?) invalid_option ;;
     :)
       case "$OPTARG" in
