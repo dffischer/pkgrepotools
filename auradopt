@@ -36,7 +36,7 @@ fi
 
 # Prepare branch.
 offremote -n "$name" \
-  "ssh://aur@aur4.archlinux.org/${package}.git" \
+  "ssh://aur@aur.archlinux.org/${package}.git" \
   || exit $?
 
 # Pull in history.
