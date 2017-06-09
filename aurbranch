@@ -81,6 +81,19 @@ then
   branch+="/$pkgbase"
 fi
 
+# Refrain from updating .SRCINFO only changed in terms of time stamp.
+readonly lastsrcinfo="$tmpdir/SRCINFO"
+if git cat-file blob "$branch:.SRCINFO" > "$lastsrcinfo" 2> /dev/null
+then
+  omit-date() {
+    sed '2{/^#.*:.*:/d}' $1
+  }
+  if cmp -s <(omit-date "$lastsrcinfo") <(omit-date "${srcinfo:-.SRCINFO}")
+  then
+    srcinfo="$lastsrcinfo"
+  fi
+fi
+
 
 # Update the branch.
 offbranch -b "$branch" \

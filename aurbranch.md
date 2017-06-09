@@ -28,6 +28,8 @@ It uses offbranch(1) to compose a new revision from PKGBUILD, .SRCINFO and given
   - `-i` _info_:
     Select a file to include as _.SRCINFO_, instead of automatically generating one from the _PKGBUILD_ using mksrcinfo.
 
+    When automatically generating the file, changes in the time stamp included by mksrcinfo as a comment on the second line will be ignored.
+
     This file will be stored to the distribution branch under the name _.SRCINFO_, regardless of its original name. Its _pkgbase_ variable will determine the branch name.
 
     If an argument provides a file with the name _.SRCINFO_, it overwrites the choice of this option in regards of storage to the branch. The file chosen with this option will then only be queried for its _pkgbase_.
