@@ -1,4 +1,0 @@
-add#source#https://lists.archlinux.org/pipermail/pacman-dev/2015-April/020090.html
-add#md5sums#858cc2d891cf385ec2f0400b34432810
-replace#global#build() {#prepare() {\n  grep -Pzo "(?s)(?<=<PRE>).*(?=</PRE>)" 020090.html | sed "s/\\(Couldn't detect version for template '\%s'\\)\\\\\\\\n/\\1/" | recode html..ascii | sed '\\|^diff.*/test/|Q' | patch -p1 -d "$pkgname-$pkgver"\n}\n\n\0
-remove#options#debug
