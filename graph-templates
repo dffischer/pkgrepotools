@@ -30,6 +30,7 @@ fi | (
 
   # Find relations.
   extract_templates() {
+    echo "  \"$2\";"
     grep -Po '(?<=template (input|start); name=).*(?=;|$)' $1 \
       | sed "s/.*/  \"$2\" -> \"\0\";/"
   }
