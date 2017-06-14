@@ -70,7 +70,14 @@ done
 # Generate missing .SRCINFO.
 if [ -z "$srcinfo" ]
 then
-  mksrcinfo ${pkgbuild:+"$pkgbuild"}
+  readonly dir="$(dirname "${pkgbuild:-PKGBUILD}")"
+  if [ "$dir" != . ]
+  then
+    srcinfo="$dir/.SRCINFO"
+  fi
+  ( cd "$dir"
+    mksrcinfo ${pkgbuild:+"${pkgbuild##*/}"}
+  ) > "${srcinfo:-.SRCINFO}"
 fi
 
 # Determine branch name.
