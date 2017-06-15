@@ -70,14 +70,20 @@ done
 # Generate missing .SRCINFO.
 if [ -z "$srcinfo" ]
 then
-  readonly dir="$(dirname "${pkgbuild:-PKGBUILD}")"
-  if [ "$dir" != . ]
+  if [ -n "$pkgbuild" ]
   then
-    srcinfo="$dir/.SRCINFO"
+    # "cd ... cd $OLDPWD", acts like "pushd ... popd", but only
+    # modifies $OLDPWD when the directory was actually changed.
+    cd "$(dirname "$pkgbuild")"
+    mksrcinfo "${pkgbuild##*/}"
+    if [ -n "${OLDPWD}" ]
+    then
+      srcinfo="$PWD/.SRCINFO"
+      cd "$OLDPWD"
+    fi
+  else
+    mksrcinfo
   fi
-  ( cd "$dir"
-    mksrcinfo ${pkgbuild:+"${pkgbuild##*/}"}
-  ) > "${srcinfo:-.SRCINFO}"
 fi
 
 # Determine branch name.
