@@ -58,7 +58,7 @@ Both are needed by the _PKGBUILD_ and should thus be included in the AUR branch.
 ```
 
 
-As the _PKGBUILD_ gets more complex, automatically generating the _.SRCINFO_ file with the _mksrcinfo_ program is not sufficient any longer. It has to be edited manually and thus is now included in the main branch.
+As the _PKGBUILD_ gets more complex, automatically generating the _.SRCINFO_ file with _makepkg --printsrcinfo_ program is not sufficient any longer. It has to be edited manually and thus is now included in the main branch.
 
 ```
 examplepackage
@@ -201,7 +201,7 @@ Apart from the package and intermediate files _makepkg_ leaves, this also produc
 
 ## Distribution
 
-The templates also have to be expanded before _mksrcinfo_ can do its work properly. A _PKGBUILD_ uploaded to the AUR should also be self-contained and not rely on any external templates. So expansion should also happen before throwing in _aurbranch_. Luckily, _makepkg-expanded_ can not only invoke _makepkg_, but run any program, even arbitrary shell code.
+A _PKGBUILD_ uploaded to the AUR should be self-contained and not rely on any external templates. The _.SRCINFO_ should also be created only from the expanded _PKGBUILD_. So expansion should also happen before throwing in _aurbranch_. Luckily, _makepkg-expanded_ can not only invoke _makepkg_, but run any program, even arbitrary shell code.
 
 ```bash
 makepkg-expanded -r 'aurbranch -p "$1" *' -a

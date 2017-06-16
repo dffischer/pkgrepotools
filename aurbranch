@@ -75,14 +75,14 @@ then
     # "cd ... cd $OLDPWD", acts like "pushd ... popd", but only
     # modifies $OLDPWD when the directory was actually changed.
     cd "$(dirname "$pkgbuild")"
-    mksrcinfo "${pkgbuild##*/}"
+    makepkg --printsrcinfo -p "${pkgbuild##*/}" > .SRCINFO
     if [ -n "${OLDPWD}" ]
     then
       srcinfo="$PWD/.SRCINFO"
       cd "$OLDPWD"
     fi
   else
-    mksrcinfo
+    makepkg --printsrcinfo > .SRCINFO
   fi
 fi
 

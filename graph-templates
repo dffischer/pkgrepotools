@@ -47,7 +47,7 @@ fi | (
   do
     extract_templates "$pkgbuild" \
       "$(makepkg-expanded -p "$pkgbuild" \
-        -r 'mksrcinfo -o /dev/stdout "$1"' \
+        -r 'makepkg --printsrcinfo -p "$1"' \
       | grep -Po '(?<=pkgbase = ).*')"
   done
   echo '}'

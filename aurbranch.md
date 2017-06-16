@@ -26,7 +26,7 @@ It uses offbranch(1) to compose a new revision from PKGBUILD, .SRCINFO and given
     If an argument provides a file with the name _PKGBUILD_, it overwrites the choice of this option in regards of storage to the branch. The file chosen with this option will then only be used to generate the .SRCINFO, unless `-i` is also given.
 
   - `-i` _info_:
-    Select a file to include as _.SRCINFO_, instead of automatically generating one from the _PKGBUILD_ using mksrcinfo.
+    Select a file to include as _.SRCINFO_, instead of automatically generating one from the _PKGBUILD_ using `makepkg --printsrcinfo`.
 
     When automatically generating the file, changes in the time stamp included by mksrcinfo as a comment on the second line will be ignored.
 
@@ -66,4 +66,4 @@ This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http:
 
 ## SEE ALSO
 
-offbranch(1), mksrcinfo, git(1).
+offbranch(1), makepkg(1), git(1).

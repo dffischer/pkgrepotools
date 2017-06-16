@@ -29,11 +29,9 @@ To use the [PKGBUILD](PKGBUILD) as it is kept in this repository, [the makepkg-t
 
 ## Dependencies
 
-To use _makepkg-expanded_, only pacman is needed, as it includes _makepkg-template_.
+To use _makepkg-expanded_, only pacman is needed, as it includes _makepkg-template_. For _aurbranch_ to automatically generate _.SRCINFO_ files, _makepkg_ is needed, which is also included in pacman.
 
 The repository-oriented tools _offbranch_, _aurbranch_ and _aurremote_ need git.
-
-For _aurbranch_ to automatically generate _.SRCINFO_ files, it also needs [pkgbuild-introspection](https://www.archlinux.org/packages/community/any/pkgbuild-introspection/).
 
 The output of _graph-templates_ can be processed further using _graphviz_.
 
