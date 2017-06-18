@@ -3,7 +3,7 @@ graph-templates(1) -- graph template include relations
 
 ## SYNOPSIS
 
-`graph-template` [-h] [files]
+`graph-template` [`options` | build scripts | templates ...]
 
 
 ## DESCRIPTION
@@ -13,6 +13,12 @@ This program will look up which templates the given files include and output thi
 Templates, recognized by their file extension are colored gray.
 
 If no files are given, all files names PKGBUILD or ending with .template will be considered instead.
+
+
+## OPTIONS
+
+  - `-h`:
+    Shows a summary of the options.
 
 
 ## BUGS

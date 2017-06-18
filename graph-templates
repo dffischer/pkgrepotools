@@ -1,15 +1,27 @@
 #!/bin/bash
 
-if [ "$1" == '-h' ]
-then
-  echo "usage: $0 [files]"
-  echo 'display template inclusion relation in graphiz dot format'
-  exit
-fi
+# Parse arguments.
+while [ $OPTIND -le $# ]
+do
+  if getopts 'h' argument
+  then
+    case $argument in
+      h)
+        echo "usage: $0 [options | files ...]"
+        echo 'display template inclusion relation in graphiz dot format'
+        echo ' -h  only shows this help text'
+        exit ;;
+      \?) exit 1 ;;
+    esac
+  else
+    files+=("${!OPTIND}")
+    let OPTIND++
+  fi
+done
 
-if [ $# -gt 0 ]
+if [ ${#files} -gt 0 ]
 then
-  printf '%s\0' "$@"
+  printf '%s\0' "${files[@]}"
 else
   find -regextype posix-egrep \
     \( -name 'PKGBUILD' -o -regex '.*-[[:digit:]]+\.template' \) \
