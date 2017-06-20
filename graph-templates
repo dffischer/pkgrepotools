@@ -50,13 +50,12 @@ extract_templates() {
 }
 
 echo 'digraph templates {'
-echo '  node [style=filled, fillcolor=gray]'
 for template in "${!templates[@]}"
 do
   extract_templates "$template" \
     "${templates[$template]%-[[:digit:]].template}"
 done
-echo '  node [style=solid]'
+echo '  node [style=bold]'
 for pkgbuild in "${pkgbuilds[@]}"
 do
   extract_templates "$pkgbuild" \
