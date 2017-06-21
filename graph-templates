@@ -44,7 +44,7 @@ fi
 
 # Find relations.
 extract_templates() {
-  echo "  \"$2\";"
+  echo "  \"$2\"${3:+ [$3]};"
   grep -Po '(?<=template (input|start); name=).*(?=;|$)' $1 \
     | sed "s/.*/  \"$2\" -> \"\0\";/"
 }
@@ -55,12 +55,12 @@ do
   extract_templates "$template" \
     "${templates[$template]%-[[:digit:]].template}"
 done
-echo '  node [style=bold]'
 for pkgbuild in "${pkgbuilds[@]}"
 do
   extract_templates "$pkgbuild" \
     "$(makepkg-expanded -p "$pkgbuild" \
       -r 'makepkg --printsrcinfo -p "$1"' \
-    | grep -Po '(?<=pkgbase = ).*')"
+    | grep -Po '(?<=pkgbase = ).*')" \
+    'style=bold'
 done
 echo '}'
