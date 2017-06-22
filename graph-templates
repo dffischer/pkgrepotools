@@ -43,6 +43,9 @@ fi
 
 
 # Find relations.
+
+# Outputs a node and edges from it to all templates found in the given file.
+# Arguments: node name, file path, optional node style
 extract_templates() {
   echo "  \"$2\"${3:+ [$3]};"
   grep -Po '(?<=template (input|start); name=).*(?=;|$)' $1 \
