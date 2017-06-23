@@ -10,7 +10,7 @@ graph-templates(1) -- graph template include relations
 
 This program will look up which templates the given files include and output this relation in graphiz' dot format.
 
-Build scripts can be recognized by their bold outline. They are told apart from templates by their file extension.
+Build scripts can be recognized by their bold outline. They are told apart from templates by their file extension. Nodes with dashed outline are only found referenced in processed files but not given on the command line themselves. Including them could expand the graph further.
 
 If no files are given, all files names PKGBUILD or ending with .template will be considered instead.
 
