@@ -1,51 +1,19 @@
 #!/bin/bash
 
-# Parse arguments.
-declare -A templates
-
 # Decides whether a full path is a template or build script, and processes it.
 categorize() {
-  if [[ $1 == *.template ]]
+  if [[ $1 =~ .*/([^/]+)-[[:digit:]]+\.template ]]
   then
-    templates["$1"]="${1##*/}"
+    extract_templates "$1" "${BASH_REMATCH[1]}" 'style=solid'
   else
-    pkgbuilds+=("$1")
+    extract_templates "$1" \
+      "$(makepkg-expanded -p "$1" \
+        -r 'makepkg --printsrcinfo -p "$1"' \
+      | grep -Po '(?<=pkgbase = ).*')" \
+      'style=bold'
   fi
 }
 
-while [ $OPTIND -le $# ]
-do
-  if getopts 'h' argument
-  then
-    case $argument in
-      h)
-        echo "usage: $0 [options | files ...]"
-        echo 'display template inclusion relation in graphiz dot format'
-        echo ' -h  only shows this help text'
-        exit ;;
-      \?) exit 1 ;;
-    esac
-  else
-    categorize "${!OPTIND}"
-    let OPTIND++
-  fi
-done
-
-if [ ${#templates[@]} -eq 0 ] && [ ${#pkgbuilds} -eq 0 ]
-then
-  while read -rd $'' file
-  do
-    categorize $file
-  done < <( find -regextype posix-egrep \
-    \( -name 'PKGBUILD' -o -regex '.*-[[:digit:]]+\.template' \) \
-    -print0 )
-fi
-
-
-# Find relations.
-
-# Outputs a node and edges from it to all templates found in the given file.
-# Arguments: node name, file path, optional node style
 extract_templates() {
   echo "  \"$2\"${3:+ [$3]};"
   grep -Po '(?<=template (input|start); name=).*(?=;|$)' $1 \
@@ -54,18 +22,32 @@ extract_templates() {
 
 echo 'digraph templates {'
 echo "  node [style=dashed];"
-for template in "${!templates[@]}"
+while [ $OPTIND -le $# ]
 do
-  extract_templates "$template" \
-    "${templates[$template]%-[[:digit:]].template}" \
-    'style=solid'
+  if getopts 'h' argument
+  then
+    case $argument in
+      h) {
+        seen=true
+        echo "usage: $0 [options | files ...]"
+        echo 'display template inclusion relation in graphiz dot format'
+        echo ' -h  only shows this help text'
+      } >&2 ;;
+      \?) exit 1 ;;
+    esac
+  else
+    categorize "${!OPTIND}"
+    seen=true
+    let OPTIND++
+  fi
 done
-for pkgbuild in "${pkgbuilds[@]}"
-do
-  extract_templates "$pkgbuild" \
-    "$(makepkg-expanded -p "$pkgbuild" \
-      -r 'makepkg --printsrcinfo -p "$1"' \
-    | grep -Po '(?<=pkgbase = ).*')" \
-    'style=bold'
-done
+if [ -z ${seen++} ]
+then
+  while read -rd $'' file
+  do
+    categorize $file
+  done < <( find -regextype posix-egrep \
+    \( -name 'PKGBUILD' -o -regex '.*-[[:digit:]]+\.template' \) \
+    -print0 )
+fi
 echo '}'
