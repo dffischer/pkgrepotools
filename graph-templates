@@ -20,6 +20,33 @@ extract_templates() {
     | sed "s/.*/  \"$2\" -> \"\0\";/"
 }
 
+
+process_defaults() {
+  while read -rd $''
+  do
+    categorize $REPLY
+  done < <( find -regextype posix-egrep \
+    \( -name 'PKGBUILD' -o -regex '.*-[[:digit:]]+\.template' \) \
+    -print0 )
+}
+
+suppress_defaults() {
+  process_defaults() {
+    :
+  }
+}
+
+# Proxy method to categorize, preventing the
+# processing of defaults on first execution.
+process() {
+  suppress_defaults
+  process() {
+    categorize "$@"
+  }
+  categorize "$@"
+}
+
+
 echo 'digraph templates {'
 echo "  node [style=dashed];"
 while [ $OPTIND -le $# ]
@@ -28,7 +55,7 @@ do
   then
     case $argument in
       h) {
-        seen=true
+        suppress_defaults
         echo "usage: $0 [options | files ...]"
         echo 'display template inclusion relation in graphiz dot format'
         echo ' -h  only shows this help text'
@@ -36,18 +63,9 @@ do
       \?) exit 1 ;;
     esac
   else
-    categorize "${!OPTIND}"
-    seen=true
+    process "${!OPTIND}"
     let OPTIND++
   fi
 done
-if [ -z ${seen++} ]
-then
-  while read -rd $'' file
-  do
-    categorize $file
-  done < <( find -regextype posix-egrep \
-    \( -name 'PKGBUILD' -o -regex '.*-[[:digit:]]+\.template' \) \
-    -print0 )
-fi
+process_defaults
 echo '}'
