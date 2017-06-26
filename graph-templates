@@ -51,15 +51,21 @@ echo 'digraph templates {'
 echo "  node [style=dashed];"
 while [ $OPTIND -le $# ]
 do
-  if getopts 'h' argument
+  if getopts 'hl:' argument
   then
     case $argument in
       h) {
         suppress_defaults
         echo "usage: $0 [options | files ...]"
         echo 'display template inclusion relation in graphiz dot format'
-        echo ' -h  only shows this help text'
+        echo ' -h         only shows this help text'
+        echo ' -l <file>  read file list from file'
       } >&2 ;;
+      l)
+        while read -r
+        do
+          process $REPLY
+        done < "$OPTARG" ;;
       \?) exit 1 ;;
     esac
   else

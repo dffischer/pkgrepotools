@@ -20,6 +20,11 @@ If no files are given, all files names PKGBUILD or ending with .template will be
   - `-h`:
     Shows a summary of the options.
 
+  - `-l` _file_:
+    Read additional file names from a file, one per line.
+
+    To choose only a subset of files to include in the graph among a large project, it may be useful to generate the input with another program, like e.g. `find`.
+
 
 ## BUGS
 
