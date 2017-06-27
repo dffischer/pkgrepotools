@@ -51,7 +51,7 @@ echo 'digraph templates {'
 echo "  node [style=dashed];"
 while [ $OPTIND -le $# ]
 do
-  if getopts 'hl:' argument
+  if getopts 'hl:z:' argument
   then
     case $argument in
       h) {
@@ -60,12 +60,13 @@ do
         echo 'display template inclusion relation in graphiz dot format'
         echo ' -h         only shows this help text'
         echo ' -l <file>  read file list from file'
+        echo ' -z <file>  read zero delimited file list'
       } >&2 ;;
       l)
         while read -r
         do
           process $REPLY
-        done < "$OPTARG" ;;
+        done < <(cat "$OPTARG") ;;
       \?) exit 1 ;;
     esac
   else
