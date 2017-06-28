@@ -67,6 +67,11 @@ do
         do
           process $REPLY
         done < <(cat "$OPTARG") ;;
+      z)
+        while read -rd $''
+        do
+          process $REPLY
+        done < "$OPTARG" ;;
       \?) exit 1 ;;
     esac
   else

@@ -23,7 +23,12 @@ If no files are given, all files names PKGBUILD or ending with .template will be
   - `-l` _file_:
     Read additional file names from a file, one per line.
 
-    To read from the standard input, pass _-_ as a filename. To choose only a subset of files to include in the graph among a large project, it may be useful to generate the input with another program, like e.g. `find`.
+    To read from the standard input, pass _-_ as a filename.
+
+  - `-z` _file_:
+    Read additional file names from a file like with `-l`, but delimit them by null characters.
+
+    The standard input can be written as _-_. To choose only a subset of files to include in the graph among a large project, it may be useful to generate the input with another program, like e.g. `find` with the `-print0` action.
 
 
 ## BUGS
