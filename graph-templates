@@ -24,7 +24,7 @@ extract_templates() {
 process_defaults() {
   while read -rd $''
   do
-    categorize $REPLY
+    process $REPLY
   done < <( find -regextype posix-egrep \
     \( -name 'PKGBUILD' -o -regex '.*-[[:digit:]]+\.template' \) \
     -print0 )
@@ -41,9 +41,9 @@ suppress_defaults() {
 process() {
   suppress_defaults
   process() {
-    categorize "$@"
+    categorize "$@" &
   }
-  categorize "$@"
+  process "$@"
 }
 
 
@@ -80,4 +80,5 @@ do
   fi
 done
 process_defaults
+wait
 echo '}'
