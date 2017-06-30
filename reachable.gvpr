@@ -1,0 +1,25 @@
+#!/usr/bin/gvpr -f
+# reachable.gvpr
+# Restricts a given graph to nodes reachable from bold nodes.
+
+BEGIN{
+  graph_t g = graph("", "D");
+  void process(edge_t e) {
+    node_t h = clone(g, e.head);
+    node_t t = clone(g, e.tail);
+    edge(t, h, "");
+    e.tail.seen = 1;
+    if (!hasAttr(e.head, "seen") || !e.head.seen) {
+      for(e = fstout(e.head); e; e = nxtout(e)) {
+        process(e);
+      }
+    }
+  }
+}
+N[style=="bold"]{
+  edge_t e;
+  for(e = fstout($); e; e = nxtout(e)) {
+    process(e);
+  }
+}
+END_G { $O = g; }

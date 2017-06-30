@@ -12,7 +12,7 @@ This program will look up which templates the given files include and output thi
 
 Build scripts can be recognized by their bold outline. They are told apart from templates by their file extension. Nodes with dashed outline are only found referenced in processed files but not given on the command line themselves. Including them could expand the graph further.
 
-If no files are given, all files names PKGBUILD or ending with .template will be considered instead.
+If no files are given, all files names PKGBUILD or ending with .template will be considered instead. For a better overview, output may be piped through the _reachable.gvpr_ script, which deletes all templates not at least transitively included in any build script.
 
 
 ## OPTIONS
