@@ -81,8 +81,6 @@ It does so by expanding the templates in a temporary file besides the original w
 
     The exact command line composed will use the expanded PKGBUILD in place of the original, still taking into account changes to the original when suggesting a commit message.
 
-    All files that are tracked by Git are also added for distribution, guarded against nothing else but the PKGBUILD matches this set.
-
 
 ## EXIT STATUS
 

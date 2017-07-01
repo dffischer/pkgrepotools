@@ -32,6 +32,11 @@ It uses offbranch(1) to compose a new revision from PKGBUILD, .SRCINFO and given
 
     If an argument provides a file with the name _.SRCINFO_, it overwrites the choice of this option in regards of storage to the branch. The file chosen with this option will then only be queried for its _pkgbase_.
 
+  - `-r`:
+    Do not parse the _.SRCINFO_ for additional files to include.
+
+    Without this option, every file noted as a _source_ or _install_ file will be treated as if it were given as an additional argument as long as it exists and does not match any gitignore(1) filter.
+
 When using one of these options with files automatically generated from original _PKGBUILD_ or _.SRCINFO_ tracked by the repository, it is recommended to also specify these prefixed by a colon so offbranch(1) considers it when proposing a commit message.
 
 Apart from these, all options offbranch(1) accepts are also valid to aurbranch, except `-b`. They will be passed through.

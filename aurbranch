@@ -42,7 +42,7 @@ list() {
 # Parse arguments.
 while [ $OPTIND -le $# ]
 do
-  if getopts "p:i:$opts" argument
+  if getopts "p:i:r$opts" argument
   then
     case $argument in
       h)
@@ -50,10 +50,12 @@ do
         echo 'Commit changes in the PKGBUILD to an AUR distribution branch.'
         echo ' -p <script>  file to use in place of PKGBUILD'
         echo ' -i <script>  file to use in place of .SRCINFO'
+        echo ' -r           omit install and source files'
         echo 'Also supports all options offbranch accepts, apart from -b.'
         exit ;;
       p) pkgbuild="$OPTARG" ;;
       i) srcinfo="$OPTARG" ;;
+      r) source=false ;;
       s) separator="$OPTARG" ;;&
       l) list $'\n' ;;
       z) list $'' ;;
@@ -92,6 +94,19 @@ branch=aur
 if [ -n "$(git rev-parse --show-prefix 2> /dev/null)" ]
 then
   branch+="/$pkgbase"
+fi
+
+# Add source and install files.
+if [ -z "${source++}" ]
+then
+  source /usr/share/makepkg/util/source.sh
+  readonly startdir=.
+  for source in $(sed -n \
+    's/^\t*\(source\|install\) = \(.*\)$/\2/p' "${srcinfo:-.SRCINFO}")
+  do
+    file="$(get_filename "$source")"
+    [ -n "$(git ls-files "$file")" ] && pass+=("$(resolve "$file")")
+  done
 fi
 
 

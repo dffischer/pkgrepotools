@@ -63,8 +63,7 @@ do
     r) process+=("$OPTARG") ;;
     R) process+=("exec bash '$(realpath "$OPTARG" | sed "s/'/'\\''/g")'"' "$@"') ;;
     b)
-      process+=('exec aurbranch -p "$1" "${@/%/:}" -z <(
-        shopt -s nullglob; git ls-files -z .git *)') ;;
+      process+=('exec aurbranch -p "$1" "${@/%/:}"') ;;
     \?) invalid_option ;;
     :)
       case "$OPTARG" in
