@@ -1,9 +1,9 @@
-clean-template(1) -- build script beautifier
+clean-templates(1) -- build script beautifier
 ============================================
 
 ## SYNOPSIS
 
-`clean-template` [ `options` ] [_`file`_]
+`clean-templates` [ `options` ] [_`file`_]
 
 
 ## DESCRIPTION
@@ -23,7 +23,7 @@ This program cleans every PKGBUILD(5) it is passed from some of the chaos makepk
 
 ## OPTIONS
 
-  If no file is given, clean-template reads from the standard input.
+  If no file is given, clean-templates reads from the standard input.
 
   - `-h`:
     Shows a summary of the options.
@@ -43,7 +43,7 @@ If a template marker is opened buy not closed, indicated by a "template start" w
 
 ## BUGS
 
-Not all such broken templates lead to errors. They only cause an error if they are part of or delimit a template that is to be removed in the curse of deduplication. Thus, clean-template cannot be used to check template marker validity. This is intentional to speed up processing.
+Not all such broken templates lead to errors. They only cause an error if they are part of or delimit a template that is to be removed in the curse of deduplication. Thus, clean-templates cannot be used to check template marker validity. This is intentional to speed up processing.
 
 This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http://github.com/dffischer/pkgrepotools). Bugs can be filed in [the tracker found there](http://github.com/dffischer/pkgrepotools/issues).
 

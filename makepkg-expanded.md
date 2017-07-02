@@ -45,14 +45,14 @@ It does so by expanding the templates in a temporary file besides the original w
     The default is _.expanded_, so without any options, the script actually processed will be called _PKGBUILD.expanded_.
 
   - `-m`:
-    This option is passed to clean-template(1) which is invoked immediately after template expansion to leave template markers and mode lines intact. Duplicate templates will still be removed.
+    This option is passed to clean-templates(1) which is invoked immediately after template expansion to leave template markers and mode lines intact. Duplicate templates will still be removed.
 
     When the `-l` option is also specified, cleaning is skipped completely.
 
   - `-d`:
     Only remove mode lines and template markers instead when cleaning and leave duplicate templates untouched.
 
-    This completely avoids clean-template invocation and instead replaces it with sed, as mentioned in the clean-template(1) manual page. When the `-u` option is also specified, cleaning is skipped completely.
+    This completely avoids clean-templates invocation and instead replaces it with sed, as mentioned in the clean-templates(1) manual page. When the `-u` option is also specified, cleaning is skipped completely.
 
   - `-r` _command_:
     Command to execute after expanding each PKGBUILD.
@@ -98,4 +98,4 @@ This project was created by XZS <d.f.fischer@web.de> and [lives at GitHub](http:
 
 ## SEE ALSO
 
-makepkg-template(1), makepkg(1), clean-template(1), cp-pkver(1), bash(1).
+makepkg-template(1), makepkg(1), clean-templates(1), cp-pkver(1), bash(1).

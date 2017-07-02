@@ -41,22 +41,22 @@ do
     m)
       if declare -f | grep -q sed
       then
-        clean-template() {
+        clean-templates() {
           cat
         }
       else
-        clean-template() {
-          command clean-template -m
+        clean-templates() {
+          command clean-templates -m
         }
       fi ;;
     d)
       if declare -f | grep -q command
       then
-        clean-template() {
+        clean-templates() {
           cat
         }
       else
-        clean-template() {
+        clean-templates() {
           sed '/# vim/d;x;$G;/# template/d;1d'
         }
       fi ;;
@@ -111,7 +111,7 @@ do
 
       # expand and clean
       makepkg-template -p "$file" -o - "${templates[@]/#/--template-dir=}" | \
-        clean-template > "$expanded"
+        clean-templates > "$expanded"
       [ ${PIPESTATUS[0]} -ne 0 ] && exit ${PIPESTATUS[0]}
 
       # process
