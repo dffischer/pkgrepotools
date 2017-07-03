@@ -37,6 +37,11 @@ It uses offbranch(1) to compose a new revision from PKGBUILD, .SRCINFO and given
 
     Without this option, every file noted as a _source_ or _install_ file will be treated as if it were given as an additional argument as long as it exists and does not match any gitignore(1) filter.
 
+  - `-v`:
+    Output a status message containing the _pkgbase_ as soon as it can be determined.
+
+    This can be useful when aurbranch is applied to multiple files through scripts or makepkg-expanded(1) to keep track of whick package is currently processed.
+
 When using one of these options with files automatically generated from original _PKGBUILD_ or _.SRCINFO_ tracked by the repository, it is recommended to also specify these prefixed by a colon so offbranch(1) considers it when proposing a commit message.
 
 Apart from these, all options offbranch(1) accepts are also valid to aurbranch, except `-b`. They will be passed through.

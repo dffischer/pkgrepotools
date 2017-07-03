@@ -40,9 +40,10 @@ list() {
 }
 
 # Parse arguments.
+verbose=:
 while [ $OPTIND -le $# ]
 do
-  if getopts "p:i:r$opts" argument
+  if getopts "p:i:rv$opts" argument
   then
     case $argument in
       h)
@@ -56,6 +57,7 @@ do
       p) pkgbuild="$OPTARG" ;;
       i) srcinfo="$OPTARG" ;;
       r) source=false ;;
+      v) verbose=echo ;;
       s) separator="$OPTARG" ;;&
       l) list $'\n' ;;
       z) list $'' ;;
@@ -90,6 +92,7 @@ fi
 
 # Determine branch name.
 readonly pkgbase="$(grep -Po "(?<=pkgbase = ).*" "${srcinfo:-.SRCINFO}")"
+$verbose "Composing $pkgbase"
 branch=aur
 if [ -n "$(git rev-parse --show-prefix 2> /dev/null)" ]
 then
