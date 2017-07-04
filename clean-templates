@@ -46,6 +46,14 @@ seen=/
 
 while read -r line
 do
+  if ${empty-false}
+  then
+    empty=false
+    if [ "$line" = '' ]
+    then
+      continue
+    fi
+  fi
   if [[ $line =~ $search ]]
   then
     case ${BASH_REMATCH[1]} in
@@ -55,6 +63,7 @@ do
         if [[ $name =~ ^($seen)$ ]]
         then
           collect_until_end || exit 1
+          empty=true
           continue
         else
           seen+="|${name}"
