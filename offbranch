@@ -140,11 +140,11 @@ case $? in
     exit 3 ;;
   1) # Changes to commit
     parent="$branch"
-    echo "updating $branch"
+    echo "updating ${branch#refs/heads/}"
     ;;
   128) # Branch does not yet exist.
     diffinfo >> "$message"
-    echo "creating $branch"
+    echo "creating ${branch#refs/heads/}"
     ret=2
     ;;
 esac
