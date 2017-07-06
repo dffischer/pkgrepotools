@@ -22,9 +22,9 @@ resolve() {
   local readonly filename="${1%$separator*}"
   if [ -h "$filename" ]
   then
-    printf '%s%s%s\0' "$(readlink "$filename")" "$separator" "$addpath"
+    printf "%s%s%s$2" "$(readlink "$filename")" "$separator" "$addpath"
   else
-    printf '%s\0' "$1"
+    printf "%s$2" "$1"
   fi
 }
 
@@ -34,7 +34,7 @@ list() {
   mkfifo "$fifo"
   while read -rd "$1"
   do
-    resolve "$REPLY"
+    resolve "$REPLY" "\0"
   done < "$OPTARG" > "$fifo" &
   pass+=("-z" "$fifo")
 }
