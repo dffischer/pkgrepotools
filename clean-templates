@@ -1,9 +1,7 @@
 #!/bin/bash
 
 search='^[[:space:]]*# (vim|template\ (start.*name=([[:alnum:]-]*)|end)).*$'
-skip() {
-  continue
-}
+skip=true
 
 while getopts 'hm' argument
 do
@@ -16,9 +14,7 @@ do
       exit ;;
     m)
       search='^[[:space:]]*# (template\ (start.*name=([[:alnum:]-]*))).*$'
-      skip() {
-        :
-      } ;;
+      skip=false ;;
     \?) exit 1 ;;
   esac
 done
@@ -69,7 +65,7 @@ do
           seen+="|${name}"
         fi ;;
     esac
-    skip
+    $skip && continue
   fi
   echo -En "$last"
   last=$line$'\n'
